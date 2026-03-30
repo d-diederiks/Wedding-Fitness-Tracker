@@ -151,10 +151,13 @@
 
   .ex-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0; }
   .ex-table th { text-align: left; padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
-  .ex-table td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
+  .ex-table td { padding: 9px 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .ex-table tr:last-child td { border: none; }
   .ex-name { font-weight: 500; }
   .ex-note { font-size: 11px; color: var(--text-hint); }
+  .ex-weight-input { width: 100%; min-width: 90px; padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 12px; background: var(--bg); color: var(--text); outline: none; }
+  .ex-weight-input:focus { border-color: var(--accent); }
+  .ex-weight-input::placeholder { color: var(--text-hint); }
   .tip-box { margin-top: 14px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; color: var(--accent); }
 
   .meas-scroll { overflow-x: auto; }
@@ -424,10 +427,10 @@
     } catch { alert('Delete failed.'); }
   }
 
-  async function saveWorkout(date, dayName, completed, notes, btnId, spinnerId, msgId) {
+  async function saveWorkout(date, dayName, completed, notes, exNotes, btnId, spinnerId, msgId) {
     setLoading(btnId, spinnerId, true);
     try {
-      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveWorkout', date, day: dayName, completed, notes }) });
+      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveWorkout', date, day: dayName, completed, notes, exNotes: exNotes || {} }) });
       showMsg(msgId, completed ? 'Workout logged!' : 'Marked as skipped.', 'success');
       await fetchAll();
     } catch { showMsg(msgId, 'Save failed.', 'error'); }
@@ -624,8 +627,16 @@
           ${tickSection}
           ${d.exercises.length ? `
             <table class="ex-table">
-              <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Notes</th></tr></thead>
-              <tbody>${d.exercises.map(e=>`<tr><td class="ex-name">${e.name}</td><td>${e.sets}</td><td>${e.reps}</td><td class="ex-note">${e.note}</td></tr>`).join('')}</tbody>
+              <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th style="min-width:100px;">Weight / notes</th></tr></thead>
+              <tbody>${d.exercises.map((e, ei) => {
+                const savedWeights = (workout && workout.exNotes) ? (workout.exNotes[ei] || '') : '';
+                return `<tr>
+                  <td><div class="ex-name">${e.name}</div><div class="ex-note">${e.note}</div></td>
+                  <td>${e.sets}</td>
+                  <td>${e.reps}</td>
+                  <td><input class="ex-weight-input" id="exnote-${i}-${ei}" type="text" placeholder="e.g. 40kg" value="${savedWeights}"></td>
+                </tr>`;
+              }).join('')}</tbody>
             </table>` : `<div style="padding:12px 0 4px;font-size:24px;text-align:center;">&#x1F9D8;</div>`}
           <div class="tip-box">${d.tip}</div>
         </div>
@@ -641,7 +652,15 @@
   function submitWorkout(i, dayName, completed) {
     const date = document.getElementById('tickdate-' + i).value || todayStr();
     const notes = document.getElementById('ticknotes-' + i).value;
-    saveWorkout(date, dayName, completed, notes, 'tickbtn-' + i, 'ticksp-' + i, 'tickmsg-' + i);
+    const dayPlan = plan[i];
+    const exNotes = {};
+    if (dayPlan && dayPlan.exercises) {
+      dayPlan.exercises.forEach((e, ei) => {
+        const el = document.getElementById('exnote-' + i + '-' + ei);
+        if (el && el.value.trim()) exNotes[ei] = el.value.trim();
+      });
+    }
+    saveWorkout(date, dayName, completed, notes, exNotes, 'tickbtn-' + i, 'ticksp-' + i, 'tickmsg-' + i);
   }
 
   function renderWorkoutTab() {
