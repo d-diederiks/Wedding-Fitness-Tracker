@@ -496,6 +496,19 @@
     btn.classList.add('active');
   }
 
+  // ── Utilities ─────────────────────────────────────────────────
+
+  function fmtDate(dateStr) {
+    if (!dateStr) return '';
+    const s = String(dateStr);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const d = new Date(s);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
   // ── Render ────────────────────────────────────────────────────
 
   function renderAll() {
@@ -561,41 +574,72 @@
       </div>`;
     } else { bannerEl.innerHTML = ''; }
 
-    if (latest && latest.meas) {
+    // helper: format a change value with colour and direction
+    function fmtChange(diff, unit, lowerIsBetter) {
+
+    // First entry with meas data = baseline
+    const firstWithMeas = entries.find(e => e.meas && Object.values(e.meas).some(v => v));
+    if (latest && latest.meas && Object.values(latest.meas).some(v => v)) {
       const m = latest.meas;
-      const rows = [['Waist',m.waist],['Chest',m.chest],['Hips',m.hips],['Left arm',m.armL],['Right arm',m.armR],['Left thigh',m.thighL],['Right thigh',m.thighR]].filter(r => r[1]);
-      if (rows.length) {
+      const b = (firstWithMeas && firstWithMeas.date !== latest.date) ? firstWithMeas.meas : null;
+      const measFields = [
+        { key: 'waist', label: 'Waist', unit: 'cm', lowerIsBetter: true },
+        { key: 'chest', label: 'Chest', unit: 'cm', lowerIsBetter: false },
+        { key: 'hips',  label: 'Hips',  unit: 'cm', lowerIsBetter: true },
+        { key: 'armL',  label: 'Left arm',  unit: 'cm', lowerIsBetter: false },
+        { key: 'armR',  label: 'Right arm', unit: 'cm', lowerIsBetter: false },
+        { key: 'thighL',label: 'Left thigh', unit: 'cm', lowerIsBetter: true },
+        { key: 'thighR',label: 'Right thigh',unit: 'cm', lowerIsBetter: true },
+      ].filter(f => m[f.key]);
+      if (measFields.length) {
         document.getElementById('dashMeasCard').style.display = 'block';
         document.getElementById('dashMeasDisplay').innerHTML =
-          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Recorded on ${latest.date}</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;">
-            ${rows.map(([l,v]) => `<div class="metric"><div class="metric-label">${l}</div><div class="metric-value" style="font-size:18px;">${v}<span style="font-size:12px;font-weight:400;">cm</span></div></div>`).join('')}
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latest.date)}${b ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithMeas.date) : ''}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">
+            ${measFields.map(f => {
+              const diff = b && b[f.key] ? parseFloat((m[f.key] - b[f.key]).toFixed(1)) : null;
+              return `<div class="metric">
+                <div class="metric-label">${f.label}</div>
+                <div class="metric-value" style="font-size:18px;">${m[f.key]}<span style="font-size:12px;font-weight:400;">cm</span></div>
+                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div>
+              </div>`;
+            }).join('')}
           </div>`;
       }
     }
 
-    if (latest && latest.scale) {
+    // First entry with scale data = baseline
+    const firstWithScale = entries.find(e => e.scale && Object.values(e.scale).some(v => v));
+    if (latest && latest.scale && Object.values(latest.scale).some(v => v)) {
       const s = latest.scale;
-      const scaleRows = [
-        ['Body fat', s.bodyFat, '%'], ['Muscle mass', s.muscleMass, 'kg'],
-        ['Visceral fat', s.visceralFat, ''], ['Fat mass', s.fatMass, 'kg'],
-        ['Skeletal muscle', s.skeletalMuscle, 'kg'], ['Body water', s.bodyWater, '%'],
-        ['Protein', s.protein, '%'], ['BMR', s.bmr, 'kcal'],
-        ['Body age', s.bodyAge, 'yrs'], ['Bone mineral', s.boneMass, 'kg'],
-        ['Fat-free body', s.fatFreeBody, 'kg'], ['Waist-hip ratio', s.waistHip, ''],
-      ].filter(r => r[1] !== null && r[1] !== undefined);
-      if (scaleRows.length) {
+      const bs = (firstWithScale && firstWithScale.date !== latest.date) ? firstWithScale.scale : null;
+      const scaleFields = [
+        { key: 'bodyFat',       label: 'Body fat',       unit: '%',    lowerIsBetter: true },
+        { key: 'muscleMass',    label: 'Muscle mass',    unit: 'kg',   lowerIsBetter: false },
+        { key: 'visceralFat',   label: 'Visceral fat',   unit: '',     lowerIsBetter: true },
+        { key: 'fatMass',       label: 'Fat mass',       unit: 'kg',   lowerIsBetter: true },
+        { key: 'skeletalMuscle',label: 'Skeletal muscle',unit: 'kg',   lowerIsBetter: false },
+        { key: 'musclePct',     label: 'Muscle %',       unit: '%',    lowerIsBetter: false },
+        { key: 'bodyWater',     label: 'Body water',     unit: '%',    lowerIsBetter: false },
+        { key: 'protein',       label: 'Protein %',      unit: '%',    lowerIsBetter: false },
+        { key: 'bmr',           label: 'BMR',            unit: 'kcal', lowerIsBetter: false },
+        { key: 'bodyAge',       label: 'Body age',       unit: 'yrs',  lowerIsBetter: true },
+        { key: 'boneMass',      label: 'Bone mineral',   unit: 'kg',   lowerIsBetter: false },
+        { key: 'fatFreeBody',   label: 'Fat-free body',  unit: 'kg',   lowerIsBetter: false },
+        { key: 'waistHip',      label: 'Waist-hip ratio',unit: '',     lowerIsBetter: true },
+        { key: 'bmi',           label: 'BMI',            unit: '',     lowerIsBetter: true },
+      ].filter(f => s[f.key] !== null && s[f.key] !== undefined);
+      if (scaleFields.length) {
         document.getElementById('dashScaleCard').style.display = 'block';
         document.getElementById('dashScaleDisplay').innerHTML =
-          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Recorded on ${latest.date}</p>
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latest.date)}${bs ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithScale.date) : ''}</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
-            ${scaleRows.map(([l,v,u]) => {
-              const isBodyFat = l === 'Body fat';
-              const isVisceral = l === 'Visceral fat';
-              const cls = (isBodyFat && v > 25) || (isVisceral && v >= 10) ? '' : '';
-              return `<div class="metric ${isBodyFat || isVisceral ? '' : ''}">
-                <div class="metric-label">${l}</div>
-                <div class="metric-value" style="font-size:18px;">${v}<span style="font-size:12px;font-weight:400;">${u}</span></div>
+            ${scaleFields.map(f => {
+              const diff = bs && bs[f.key] !== null && bs[f.key] !== undefined ? parseFloat((s[f.key] - bs[f.key]).toFixed(1)) : null;
+              return `<div class="metric">
+                <div class="metric-label">${f.label}</div>
+                <div class="metric-value" style="font-size:18px;">${s[f.key]}<span style="font-size:12px;font-weight:400;">${f.unit}</span></div>
+                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div>
               </div>`;
             }).join('')}
           </div>`;
@@ -615,7 +659,7 @@
       const sign = parseFloat(change) > 0 ? '+' : '';
       const hasMeas = e.meas && Object.values(e.meas).some(v => v);
       rows += `<tr>
-        <td>${e.date}</td><td><strong>${e.weight}kg</strong></td>
+        <td>${fmtDate(e.date)}</td><td><strong>${e.weight}kg</strong></td>
         <td class="${cls}">${change !== null ? sign + change + 'kg' : '—'}</td>
         <td>${hasMeas ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;">Measured</span>' : ''}</td>
         <td><button class="btn btn-danger" onclick="deleteEntry('${e.date}')">Remove</button></td>
@@ -631,7 +675,7 @@
     const keys = ['waist','chest','hips','armL','armR','thighL','thighR'];
     const labels = ['Waist','Chest','Hips','L arm','R arm','L thigh','R thigh'];
     el.innerHTML = `<div class="meas-scroll"><table class="meas-table"><thead><tr><th>Date</th>${labels.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>
-      ${[...withMeas].reverse().map(e=>`<tr><td>${e.date}</td>${keys.map(k=>`<td>${e.meas[k]||'—'}</td>`).join('')}</tr>`).join('')}
+      ${[...withMeas].reverse().map(e=>`<tr><td>${fmtDate(e.date)}</td>${keys.map(k=>`<td>${e.meas[k]||'—'}</td>`).join('')}</tr>`).join('')}
     </tbody></table></div>`;
   }
 
@@ -753,7 +797,7 @@
 
     let rows = [...workouts].sort((a,b) => b.date.localeCompare(a.date)).map(w => `
       <tr>
-        <td>${w.date}</td>
+        <td>${fmtDate(w.date)}</td>
         <td>${w.day}</td>
         <td>${w.completed
           ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;font-weight:500;">Done</span>'
