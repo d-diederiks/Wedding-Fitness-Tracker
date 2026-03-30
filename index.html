@@ -228,6 +228,10 @@
       <div class="card-title">Latest measurements</div>
       <div id="dashMeasDisplay"></div>
     </div>
+    <div class="card" id="dashScaleCard" style="display:none">
+      <div class="card-title">Body composition</div>
+      <div id="dashScaleDisplay"></div>
+    </div>
     <div class="card">
       <div class="card-title">How to use</div>
       <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Log your weight every morning before eating. Tick off workouts in the Training plan tab after each session. Do full body measurements every 2 weeks. All data saves directly to Google Sheets.</p>
@@ -242,7 +246,26 @@
         <div><label>Date</label><input type="date" id="entryDate"></div>
         <div><label>Weight (kg)</label><input type="number" id="entryWeight" placeholder="e.g. 97.5" step="0.1" min="50" max="200"></div>
       </div>
-      <div class="form-divider">Measurements — optional, do every 2 weeks</div>
+
+      <div class="form-divider">Body composition — from your scale</div>
+      <div class="form-grid">
+        <div><label>BMI</label><input type="number" id="scBmi" placeholder="e.g. 31.8" step="0.1"></div>
+        <div><label>Body fat %</label><input type="number" id="scBodyFat" placeholder="e.g. 30.3" step="0.1"></div>
+        <div><label>Muscle mass (kg)</label><input type="number" id="scMuscleMass" placeholder="e.g. 65" step="0.1"></div>
+        <div><label>Muscle %</label><input type="number" id="scMusclePct" placeholder="e.g. 66" step="0.1"></div>
+        <div><label>Body water %</label><input type="number" id="scBodyWater" placeholder="e.g. 49" step="0.1"></div>
+        <div><label>Protein %</label><input type="number" id="scProtein" placeholder="e.g. 16.2" step="0.1"></div>
+        <div><label>Bone mineral (kg)</label><input type="number" id="scBoneMass" placeholder="e.g. 3.7" step="0.1"></div>
+        <div><label>Fat mass (kg)</label><input type="number" id="scFatMass" placeholder="e.g. 29.8" step="0.1"></div>
+        <div><label>Visceral fat</label><input type="number" id="scVisceralFat" placeholder="e.g. 15" step="1"></div>
+        <div><label>Skeletal muscle (kg)</label><input type="number" id="scSkeletalMuscle" placeholder="e.g. 35.3" step="0.1"></div>
+        <div><label>Basal metabolic rate</label><input type="number" id="scBmr" placeholder="e.g. 1854" step="1"></div>
+        <div><label>Body age</label><input type="number" id="scBodyAge" placeholder="e.g. 24" step="1"></div>
+        <div><label>Fat-free body (kg)</label><input type="number" id="scFatFreeBody" placeholder="e.g. 68.7" step="0.1"></div>
+        <div><label>Waist-hip ratio</label><input type="number" id="scWaistHip" placeholder="e.g. 0.9" step="0.01"></div>
+      </div>
+
+      <div class="form-divider">Body measurements — optional, do every 2 weeks</div>
       <div class="form-grid">
         <div><label>Waist (cm)</label><input type="number" id="mWaist" placeholder="cm" step="0.1"></div>
         <div><label>Chest (cm)</label><input type="number" id="mChest" placeholder="cm" step="0.1"></div>
@@ -252,6 +275,7 @@
         <div><label>Left thigh (cm)</label><input type="number" id="mThighL" placeholder="cm" step="0.1"></div>
         <div><label>Right thigh (cm)</label><input type="number" id="mThighR" placeholder="cm" step="0.1"></div>
       </div>
+
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <button class="btn btn-primary" id="saveBtn" onclick="saveEntry()">Save to Google Sheets</button>
         <div class="spinner" id="saveSpinner"></div>
@@ -301,7 +325,7 @@
 </main>
 
 <script>
-  const API = 'https://script.google.com/macros/s/AKfycbxG7r2y0JvIMQoUZ8KjDmH2HaJ4UY_9MCRNaJsN2zGfQ_z1KDwCxa6jaEh77Kp3hWMtrw/exec';
+  const API = 'https://script.google.com/macros/s/AKfycbwxRqaBrYVoNlcWoDmLjIkJSigQWJAd8pmD1YoRnkpMoOYfOgKIRTHR5jXVYoafi7P7Wg/exec';
   const WEDDING = new Date('2026-10-03');
   const START_DATE = new Date('2026-03-30');
   const START_WEIGHT = 98.5;
@@ -399,19 +423,24 @@
     const d = document.getElementById('entryDate').value;
     const w = parseFloat(document.getElementById('entryWeight').value);
     if (!d || !w) { showMsg('saveMsg', 'Please enter a date and weight.', 'error'); return; }
+    const g = id => parseFloat(document.getElementById(id).value) || null;
+    const scale = {
+      bmi: g('scBmi'), bodyFat: g('scBodyFat'), muscleMass: g('scMuscleMass'),
+      musclePct: g('scMusclePct'), bodyWater: g('scBodyWater'), protein: g('scProtein'),
+      boneMass: g('scBoneMass'), fatMass: g('scFatMass'), visceralFat: g('scVisceralFat'),
+      skeletalMuscle: g('scSkeletalMuscle'), bmr: g('scBmr'), bodyAge: g('scBodyAge'),
+      fatFreeBody: g('scFatFreeBody'), waistHip: g('scWaistHip'),
+    };
     const meas = {
-      waist: parseFloat(document.getElementById('mWaist').value)||null,
-      chest: parseFloat(document.getElementById('mChest').value)||null,
-      hips: parseFloat(document.getElementById('mHips').value)||null,
-      armL: parseFloat(document.getElementById('mArmL').value)||null,
-      armR: parseFloat(document.getElementById('mArmR').value)||null,
-      thighL: parseFloat(document.getElementById('mThighL').value)||null,
-      thighR: parseFloat(document.getElementById('mThighR').value)||null,
+      waist: g('mWaist'), chest: g('mChest'), hips: g('mHips'),
+      armL: g('mArmL'), armR: g('mArmR'), thighL: g('mThighL'), thighR: g('mThighR'),
     };
     setLoading('saveBtn','saveSpinner', true);
     try {
-      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveEntry', entry: { date: d, weight: w, meas } }) });
-      ['mWaist','mChest','mHips','mArmL','mArmR','mThighL','mThighR'].forEach(id => document.getElementById(id).value = '');
+      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveEntry', entry: { date: d, weight: w, scale, meas } }) });
+      ['scBmi','scBodyFat','scMuscleMass','scMusclePct','scBodyWater','scProtein','scBoneMass',
+       'scFatMass','scVisceralFat','scSkeletalMuscle','scBmr','scBodyAge','scFatFreeBody','scWaistHip',
+       'mWaist','mChest','mHips','mArmL','mArmR','mThighL','mThighR'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('entryWeight').value = '';
       showMsg('saveMsg', 'Saved!', 'success');
       await fetchAll();
@@ -541,6 +570,34 @@
           `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Recorded on ${latest.date}</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;">
             ${rows.map(([l,v]) => `<div class="metric"><div class="metric-label">${l}</div><div class="metric-value" style="font-size:18px;">${v}<span style="font-size:12px;font-weight:400;">cm</span></div></div>`).join('')}
+          </div>`;
+      }
+    }
+
+    if (latest && latest.scale) {
+      const s = latest.scale;
+      const scaleRows = [
+        ['Body fat', s.bodyFat, '%'], ['Muscle mass', s.muscleMass, 'kg'],
+        ['Visceral fat', s.visceralFat, ''], ['Fat mass', s.fatMass, 'kg'],
+        ['Skeletal muscle', s.skeletalMuscle, 'kg'], ['Body water', s.bodyWater, '%'],
+        ['Protein', s.protein, '%'], ['BMR', s.bmr, 'kcal'],
+        ['Body age', s.bodyAge, 'yrs'], ['Bone mineral', s.boneMass, 'kg'],
+        ['Fat-free body', s.fatFreeBody, 'kg'], ['Waist-hip ratio', s.waistHip, ''],
+      ].filter(r => r[1] !== null && r[1] !== undefined);
+      if (scaleRows.length) {
+        document.getElementById('dashScaleCard').style.display = 'block';
+        document.getElementById('dashScaleDisplay').innerHTML =
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Recorded on ${latest.date}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
+            ${scaleRows.map(([l,v,u]) => {
+              const isBodyFat = l === 'Body fat';
+              const isVisceral = l === 'Visceral fat';
+              const cls = (isBodyFat && v > 25) || (isVisceral && v >= 10) ? '' : '';
+              return `<div class="metric ${isBodyFat || isVisceral ? '' : ''}">
+                <div class="metric-label">${l}</div>
+                <div class="metric-value" style="font-size:18px;">${v}<span style="font-size:12px;font-weight:400;">${u}</span></div>
+              </div>`;
+            }).join('')}
           </div>`;
       }
     }
