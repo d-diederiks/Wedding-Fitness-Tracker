@@ -40,7 +40,7 @@
   .countdown-label { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; opacity: 0.55; }
 
   nav { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); overflow-x: auto; position: sticky; top: 0; z-index: 100; }
-  .nav-btn { padding: 14px 20px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.15s; letter-spacing: 0.02em; }
+  .nav-btn { padding: 14px 20px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
   .nav-btn:hover { color: var(--text); }
   .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
@@ -61,8 +61,9 @@
   .metric.accent .metric-label { color: var(--accent-mid); }
 
   label { display: block; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 5px; }
-  input[type=number], input[type=date] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; transition: border-color 0.15s; outline: none; }
-  input:focus { border-color: var(--accent); }
+  input[type=number], input[type=date], textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; transition: border-color 0.15s; outline: none; }
+  textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+  input:focus, textarea:focus { border-color: var(--accent); }
 
   .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
   .form-divider { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin: 16px 0 12px; display: flex; align-items: center; gap: 10px; }
@@ -76,14 +77,13 @@
   .btn-danger { background: none; border-color: var(--border); color: var(--danger); font-size: 12px; padding: 6px 12px; }
   .btn-danger:hover { background: var(--danger-light); }
 
-  .status-bar { display: flex; align-items: center; gap: 10px; margin-top: 12px; min-height: 22px; }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; flex-shrink: 0; }
+  .spinner.show { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   .status-msg { font-size: 13px; }
   .status-msg.success { color: var(--accent); }
   .status-msg.error { color: var(--danger); }
-
-  .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
-  .spinner.show { display: inline-block; }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   .sync-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
   .sync-badge.ok { background: var(--accent-light); color: var(--accent); }
@@ -92,41 +92,77 @@
 
   .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .history-table th { text-align: left; padding: 6px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
-  .history-table td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .history-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
   .history-table tr:last-child td { border: none; }
   .history-table tr:hover td { background: var(--bg-muted); }
   .change-down { color: var(--accent); font-weight: 500; }
   .change-up { color: var(--danger); font-weight: 500; }
   .empty-state { text-align: center; padding: 32px 20px; color: var(--text-hint); font-size: 14px; }
 
+  /* Training plan */
   .day-card { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
   .day-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--bg-card); transition: background 0.15s; user-select: none; }
   .day-header:hover { background: var(--bg-muted); }
+  .day-header-left { display: flex; align-items: center; gap: 12px; }
   .day-name { font-weight: 600; font-size: 15px; }
   .day-right { display: flex; align-items: center; gap: 10px; }
-  .day-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; letter-spacing: 0.04em; }
+  .day-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; }
   .tag-push { background: #E8F4FD; color: #1A5C8A; }
   .tag-pull { background: #E8F7EF; color: #1A6B3A; }
   .tag-legs { background: #FEF9EC; color: #8A5A00; }
   .tag-rest { background: var(--bg-muted); color: var(--text-muted); }
   .day-chevron { font-size: 12px; color: var(--text-hint); transition: transform 0.2s; }
   .day-chevron.open { transform: rotate(180deg); }
-  .day-body { display: none; padding: 0 18px 16px; background: var(--bg-card); border-top: 1px solid var(--border); }
+  .day-body { display: none; padding: 16px 18px; background: var(--bg-card); border-top: 1px solid var(--border); }
   .day-body.open { display: block; }
 
-  .ex-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  /* Workout tick */
+  .tick-row { display: flex; align-items: flex-start; gap: 14px; padding: 14px 16px; background: var(--bg-muted); border-radius: var(--radius-sm); margin-bottom: 14px; }
+  .tick-checkbox { width: 22px; height: 22px; border: 2px solid var(--border-strong); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; margin-top: 2px; background: white; }
+  .tick-checkbox.ticked { background: var(--accent); border-color: var(--accent); }
+  .tick-checkbox.ticked::after { content: ''; width: 12px; height: 7px; border-left: 2px solid white; border-bottom: 2px solid white; transform: rotate(-45deg) translateY(-2px); display: block; }
+  .tick-info { flex: 1; }
+  .tick-label { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .tick-date { font-size: 12px; color: var(--text-hint); margin-bottom: 8px; }
+  .tick-notes { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; background: white; color: var(--text); outline: none; resize: vertical; min-height: 56px; }
+  .tick-notes:focus { border-color: var(--accent); }
+  .tick-save-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .tick-spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+  .tick-spinner.show { display: inline-block; }
+
+  /* Completion badge on day header */
+  .completed-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--accent-light); color: var(--accent); font-weight: 500; }
+  .skipped-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--danger-light); color: var(--danger); font-weight: 500; }
+
+  /* Workout history */
+  .workout-week { margin-bottom: 20px; }
+  .workout-week-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); font-weight: 500; margin-bottom: 8px; }
+  .workout-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .workout-day-cell { aspect-ratio: 1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; border: 1px solid var(--border); background: var(--bg-muted); color: var(--text-hint); cursor: default; position: relative; }
+  .workout-day-cell.done { background: var(--accent); border-color: var(--accent); color: white; }
+  .workout-day-cell.rest { background: var(--bg-muted); color: var(--text-hint); border-style: dashed; }
+  .workout-day-cell.missed { background: var(--danger-light); border-color: #f5c5c0; color: var(--danger); }
+  .workout-day-cell .cell-label { font-size: 9px; position: absolute; bottom: 3px; left: 0; right: 0; text-align: center; }
+
+  .streak-banner { background: var(--accent-light); border: 1px solid #c0dbc8; border-radius: var(--radius-sm); padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .streak-num { font-size: 28px; font-weight: 600; color: var(--accent); line-height: 1; }
+  .streak-label { font-size: 13px; color: var(--accent); }
+  .streak-sub { font-size: 11px; color: var(--accent-mid); margin-top: 2px; }
+
+  .ex-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 0; }
   .ex-table th { text-align: left; padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
   .ex-table td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
   .ex-table tr:last-child td { border: none; }
   .ex-name { font-weight: 500; }
   .ex-note { font-size: 11px; color: var(--text-hint); }
-  .tip-box { margin-top: 12px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; color: var(--accent); }
+  .tip-box { margin-top: 14px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; color: var(--accent); }
 
   .meas-scroll { overflow-x: auto; }
   .meas-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .meas-table th { padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; }
-  .meas-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .meas-table td { padding: 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   .meas-table tr:last-child td { border: none; }
+
   .cloud-note { font-size: 12px; color: var(--text-hint); display: flex; align-items: center; gap: 6px; margin-top: 10px; }
 
   @media (max-width: 500px) {
@@ -134,6 +170,7 @@
     .header-title { font-size: 22px; }
     .nav-btn { padding: 12px 14px; font-size: 12px; }
     main { padding: 16px 12px 50px; }
+    .workout-grid { grid-template-columns: repeat(7, 1fr); }
   }
 </style>
 </head>
@@ -171,6 +208,7 @@
   <button class="nav-btn" onclick="showTab('history',this)">History</button>
   <button class="nav-btn" onclick="showTab('measurements',this)">Measurements</button>
   <button class="nav-btn" onclick="showTab('training',this)">Training plan</button>
+  <button class="nav-btn" onclick="showTab('workouts',this)">Workouts</button>
 </nav>
 
 <main>
@@ -182,13 +220,14 @@
       <span class="sync-badge loading" id="syncBadge">Loading...</span>
     </div>
     <div class="metrics-grid" id="dashMetrics"></div>
+    <div id="dashStreakBanner"></div>
     <div class="card" id="dashMeasCard" style="display:none">
       <div class="card-title">Latest measurements</div>
       <div id="dashMeasDisplay"></div>
     </div>
     <div class="card">
       <div class="card-title">How to use</div>
-      <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Log your weight every morning before eating. Do full body measurements every 2 weeks on the same day at the same time. Your data saves directly to Google Sheets — accessible from any device, any browser, anywhere. You can also open your Google Sheet directly to see all your raw data.</p>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Log your weight every morning before eating. Tick off workouts in the Training plan tab after each session. Do full body measurements every 2 weeks. All data saves directly to Google Sheets.</p>
     </div>
   </div>
 
@@ -217,7 +256,7 @@
       </div>
       <div class="cloud-note">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-        Data saves directly to your Google Sheet — accessible from any device
+        Data saves directly to your Google Sheet
       </div>
     </div>
   </div>
@@ -241,10 +280,19 @@
   <!-- TRAINING PLAN -->
   <div id="tab-training" class="section">
     <div class="card" style="margin-bottom:14px;">
-      <div class="card-title">Your 6-month training plan</div>
-      <p style="font-size:13px;color:var(--text-muted);">4 training days per week. Push / Pull / Legs split. Tap each day to expand. Rest 60–90 seconds between sets. Add a little weight each week when you can complete all reps cleanly.</p>
+      <div class="card-title">Training plan</div>
+      <p style="font-size:13px;color:var(--text-muted);">Tap a day to expand it. After completing a session, tick the checkbox and optionally add notes. Your completion is saved to Google Sheets.</p>
     </div>
     <div id="trainingPlan"></div>
+  </div>
+
+  <!-- WORKOUT LOG -->
+  <div id="tab-workouts" class="section">
+    <div id="workoutStreakCard"></div>
+    <div class="card">
+      <div class="card-title">Workout history</div>
+      <div id="workoutHistory"><div class="empty-state">No workouts logged yet. Tick off sessions in the Training plan tab.</div></div>
+    </div>
   </div>
 
 </main>
@@ -253,26 +301,95 @@
   const API = 'https://script.google.com/macros/s/AKfycbwO4a_ISgNCMQgt8Ds94OpCdgur1Q-lfmqZNsuSBmGiGVVno4DgHJOAmJ79LiuLjdjUBA/exec';
   const WEDDING = new Date('2025-10-03');
   const START_DATE = new Date('2025-03-30');
-  const START_WEIGHT = 98;
+  const START_WEIGHT = 98.5;
   let entries = [];
+  let workouts = [];
 
-  async function fetchEntries() {
+  const plan = [
+    { day: 'Monday', tag: 'Push', tagClass: 'tag-push', isRest: false, exercises: [
+      { name: 'Barbell bench press', sets: 4, reps: '8–10', note: 'Primary chest builder' },
+      { name: 'Incline dumbbell press', sets: 3, reps: '10–12', note: 'Upper chest' },
+      { name: 'Overhead press', sets: 4, reps: '8–10', note: 'Shoulder mass' },
+      { name: 'Lateral raises', sets: 3, reps: '12–15', note: 'Shoulder width' },
+      { name: 'Tricep pushdowns (cable)', sets: 3, reps: '12–15', note: '' },
+      { name: 'Skull crushers or dips', sets: 3, reps: '10–12', note: '' },
+    ], tip: 'Rest 90s between sets. Focus on slow, controlled lowering phase on every rep.' },
+    { day: 'Tuesday', tag: 'Legs + core', tagClass: 'tag-legs', isRest: false, exercises: [
+      { name: 'Barbell squat', sets: 4, reps: '8–10', note: 'Most important exercise' },
+      { name: 'Leg press', sets: 3, reps: '12–15', note: 'Volume builder' },
+      { name: 'Romanian deadlift', sets: 3, reps: '10–12', note: 'Hamstrings & glutes' },
+      { name: 'Walking lunges', sets: 3, reps: '12 each leg', note: '' },
+      { name: 'Plank hold', sets: 3, reps: '45–60s', note: 'Core stability' },
+      { name: 'Cable crunches', sets: 3, reps: '15–20', note: 'Best ab builder' },
+    ], tip: 'Legs release testosterone & growth hormone — critical for fat loss and upper body growth.' },
+    { day: 'Wednesday', tag: 'Rest', tagClass: 'tag-rest', isRest: true, exercises: [], tip: '20–30 minute walk is ideal. Keep your steps up for extra calorie burn.' },
+    { day: 'Thursday', tag: 'Pull', tagClass: 'tag-pull', isRest: false, exercises: [
+      { name: 'Lat pulldown', sets: 4, reps: '8–10', note: 'Creates V-taper' },
+      { name: 'Barbell or DB rows', sets: 4, reps: '8–10', note: 'Back thickness' },
+      { name: 'Seated cable rows', sets: 3, reps: '12', note: '' },
+      { name: 'Face pulls', sets: 3, reps: '15–20', note: 'Rear delt health' },
+      { name: 'Barbell curls', sets: 3, reps: '10–12', note: 'Bicep mass' },
+      { name: 'Hammer curls', sets: 3, reps: '12 each', note: 'Arm thickness' },
+    ], tip: 'Back width creates the V-taper that makes your waist look smaller — prioritise lat pulldowns.' },
+    { day: 'Friday', tag: 'Legs + core', tagClass: 'tag-legs', isRest: false, exercises: [
+      { name: 'Deadlift', sets: 4, reps: '5–6', note: 'Heavy compound — learn form first' },
+      { name: 'Leg press', sets: 3, reps: '12–15', note: '' },
+      { name: 'Leg extensions', sets: 3, reps: '15', note: 'Quad finisher' },
+      { name: 'Hanging leg raises', sets: 3, reps: '12–15', note: 'Lower abs' },
+      { name: 'Ab wheel rollout', sets: 3, reps: '10–12', note: 'Full core' },
+      { name: '10 min incline treadmill', sets: 1, reps: '—', note: 'Bonus fat burn' },
+    ], tip: 'Deadlift is the king of compound movements. Take time to learn proper form before going heavy.' },
+    { day: 'Saturday', tag: 'Rest', tagClass: 'tag-rest', isRest: true, exercises: [], tip: 'Wedding events, walks, swimming — stay active but no structured training needed.' },
+    { day: 'Sunday', tag: 'Rest', tagClass: 'tag-rest', isRest: true, exercises: [], tip: 'Full recovery day. Great time to prep your OMAD meal for the week ahead.' },
+  ];
+
+  // ── Data helpers ──────────────────────────────────────────────
+
+  function getWorkoutForDate(date) {
+    return workouts.find(w => w.date === date) || null;
+  }
+
+  function todayStr() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function getDayName(dateStr) {
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    return days[new Date(dateStr + 'T12:00:00').getDay()];
+  }
+
+  function calcStreak() {
+    const completed = workouts.filter(w => w.completed).map(w => w.date).sort();
+    if (!completed.length) return 0;
+    let streak = 0;
+    let check = new Date(todayStr());
+    // allow today or yesterday as most recent
+    const latest = new Date(completed[completed.length - 1]);
+    const diff = Math.floor((new Date(todayStr()) - latest) / 86400000);
+    if (diff > 1) return 0;
+    const set = new Set(completed);
+    while (true) {
+      const ds = check.toISOString().split('T')[0];
+      if (set.has(ds)) { streak++; check.setDate(check.getDate() - 1); }
+      else break;
+    }
+    return streak;
+  }
+
+  // ── API calls ─────────────────────────────────────────────────
+
+  async function fetchAll() {
     setSyncBadge('loading', 'Syncing...');
     try {
       const res = await fetch(API);
       const data = await res.json();
       entries = (data.entries || []).sort((a, b) => a.date.localeCompare(b.date));
+      workouts = data.workouts || [];
       setSyncBadge('ok', 'Synced');
     } catch (err) {
-      setSyncBadge('err', 'Offline — check connection');
+      setSyncBadge('err', 'Offline');
     }
     renderAll();
-  }
-
-  function setSyncBadge(type, text) {
-    const b = document.getElementById('syncBadge');
-    b.className = 'sync-badge ' + type;
-    b.textContent = text;
   }
 
   async function saveEntry() {
@@ -280,60 +397,82 @@
     const w = parseFloat(document.getElementById('entryWeight').value);
     if (!d || !w) { showMsg('saveMsg', 'Please enter a date and weight.', 'error'); return; }
     const meas = {
-      waist:  parseFloat(document.getElementById('mWaist').value)  || null,
-      chest:  parseFloat(document.getElementById('mChest').value)  || null,
-      hips:   parseFloat(document.getElementById('mHips').value)   || null,
-      armL:   parseFloat(document.getElementById('mArmL').value)   || null,
-      armR:   parseFloat(document.getElementById('mArmR').value)   || null,
-      thighL: parseFloat(document.getElementById('mThighL').value) || null,
-      thighR: parseFloat(document.getElementById('mThighR').value) || null,
+      waist: parseFloat(document.getElementById('mWaist').value)||null,
+      chest: parseFloat(document.getElementById('mChest').value)||null,
+      hips: parseFloat(document.getElementById('mHips').value)||null,
+      armL: parseFloat(document.getElementById('mArmL').value)||null,
+      armR: parseFloat(document.getElementById('mArmR').value)||null,
+      thighL: parseFloat(document.getElementById('mThighL').value)||null,
+      thighR: parseFloat(document.getElementById('mThighR').value)||null,
     };
-    setLoading(true);
+    setLoading('saveBtn','saveSpinner', true);
     try {
-      await fetch(API, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'saveEntry', entry: { date: d, weight: w, meas } })
-      });
+      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveEntry', entry: { date: d, weight: w, meas } }) });
       ['mWaist','mChest','mHips','mArmL','mArmR','mThighL','mThighR'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('entryWeight').value = '';
-      showMsg('saveMsg', 'Saved to Google Sheets!', 'success');
-      await fetchEntries();
-    } catch (err) {
-      showMsg('saveMsg', 'Save failed — check your connection.', 'error');
-    }
-    setLoading(false);
+      showMsg('saveMsg', 'Saved!', 'success');
+      await fetchAll();
+    } catch { showMsg('saveMsg', 'Save failed — check connection.', 'error'); }
+    setLoading('saveBtn','saveSpinner', false);
   }
 
   async function deleteEntry(date) {
     if (!confirm('Delete entry for ' + date + '?')) return;
     try {
-      await fetch(API, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'deleteEntry', date })
-      });
-      await fetchEntries();
-    } catch (err) {
-      alert('Delete failed — check your connection.');
-    }
+      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'deleteEntry', date }) });
+      await fetchAll();
+    } catch { alert('Delete failed.'); }
   }
 
-  function setLoading(on) {
-    document.getElementById('saveBtn').disabled = on;
-    document.getElementById('saveSpinner').className = 'spinner' + (on ? ' show' : '');
+  async function saveWorkout(date, dayName, completed, notes, btnId, spinnerId, msgId) {
+    setLoading(btnId, spinnerId, true);
+    try {
+      await fetch(API, { method: 'POST', body: JSON.stringify({ action: 'saveWorkout', date, day: dayName, completed, notes }) });
+      showMsg(msgId, completed ? 'Workout logged!' : 'Marked as skipped.', 'success');
+      await fetchAll();
+    } catch { showMsg(msgId, 'Save failed.', 'error'); }
+    setLoading(btnId, spinnerId, false);
+  }
+
+  // ── UI helpers ────────────────────────────────────────────────
+
+  function setSyncBadge(type, text) {
+    const b = document.getElementById('syncBadge');
+    b.className = 'sync-badge ' + type;
+    b.textContent = text;
+  }
+
+  function setLoading(btnId, spinnerId, on) {
+    const btn = document.getElementById(btnId);
+    const sp = document.getElementById(spinnerId);
+    if (btn) btn.disabled = on;
+    if (sp) sp.className = 'spinner' + (on ? ' show' : '');
   }
 
   function showMsg(id, text, type) {
     const el = document.getElementById(id);
+    if (!el) return;
     el.textContent = text;
     el.className = 'status-msg ' + type;
-    setTimeout(() => { el.textContent = ''; el.className = 'status-msg'; }, 3500);
+    setTimeout(() => { el.textContent = ''; el.className = 'status-msg'; }, 3000);
   }
+
+  function showTab(name, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // ── Render ────────────────────────────────────────────────────
 
   function renderAll() {
     renderHeader();
     renderDashboard();
     renderHistory();
     renderMeasurements();
+    renderTraining();
+    renderWorkoutTab();
   }
 
   function renderHeader() {
@@ -345,11 +484,9 @@
     document.getElementById('countdownBar').style.width = progress + '%';
     const latest = entries[entries.length - 1];
     const currentW = latest ? latest.weight : START_WEIGHT;
-    const lost = Math.max(0, START_WEIGHT - currentW).toFixed(1);
     document.getElementById('hCurrentW').textContent = currentW + 'kg';
-    document.getElementById('hLost').textContent = lost + 'kg';
-    const weeksLeft = Math.ceil(daysLeft / 7);
-    document.getElementById('headerTitle').textContent = weeksLeft + ' weeks to go \u2014 you\'ve got this.';
+    document.getElementById('hLost').textContent = Math.max(0, START_WEIGHT - currentW).toFixed(1) + 'kg';
+    document.getElementById('headerTitle').textContent = Math.ceil(daysLeft / 7) + ' weeks to go \u2014 you\'ve got this.';
   }
 
   function renderDashboard() {
@@ -358,8 +495,10 @@
     const lost = Math.max(0, START_WEIGHT - currentW).toFixed(1);
     const toGo = Math.max(0, currentW - 78).toFixed(1);
     const bmi = (currentW / (1.75 * 1.75)).toFixed(1);
-    const now = new Date();
-    const daysLeft = Math.max(0, Math.ceil((WEDDING - now) / 86400000));
+    const daysLeft = Math.max(0, Math.ceil((WEDDING - new Date()) / 86400000));
+    const totalWorkouts = workouts.filter(w => w.completed).length;
+    const streak = calcStreak();
+
     document.getElementById('dashMetrics').innerHTML = `
       <div class="metric accent">
         <div class="metric-label">Current weight</div>
@@ -372,15 +511,24 @@
         <div class="metric-sub">${entries.length} entries logged</div>
       </div>
       <div class="metric">
-        <div class="metric-label">To target (78kg)</div>
+        <div class="metric-label">To target</div>
         <div class="metric-value">${toGo}<span style="font-size:14px;font-weight:400;">kg</span></div>
         <div class="metric-sub">${Math.ceil(daysLeft / 7)} weeks left</div>
       </div>
       <div class="metric">
-        <div class="metric-label">BMI</div>
-        <div class="metric-value">${bmi}</div>
-        <div class="metric-sub">Goal: below 25</div>
+        <div class="metric-label">Workouts done</div>
+        <div class="metric-value">${totalWorkouts}</div>
+        <div class="metric-sub">Streak: ${streak} day${streak !== 1 ? 's' : ''}</div>
       </div>`;
+
+    const bannerEl = document.getElementById('dashStreakBanner');
+    if (streak >= 3) {
+      bannerEl.innerHTML = `<div class="streak-banner">
+        <div class="streak-num">${streak}</div>
+        <div><div class="streak-label">Day workout streak</div><div class="streak-sub">Keep it going — consistency is everything.</div></div>
+      </div>`;
+    } else { bannerEl.innerHTML = ''; }
+
     if (latest && latest.meas) {
       const m = latest.meas;
       const rows = [['Waist',m.waist],['Chest',m.chest],['Hips',m.hips],['Left arm',m.armL],['Right arm',m.armR],['Left thigh',m.thighL],['Right thigh',m.thighR]].filter(r => r[1]);
@@ -397,7 +545,7 @@
 
   function renderHistory() {
     const el = document.getElementById('historyContent');
-    if (!entries.length) { el.innerHTML = '<div class="empty-state">No entries yet. Start logging from the "Log entry" tab.</div>'; return; }
+    if (!entries.length) { el.innerHTML = '<div class="empty-state">No entries yet.</div>'; return; }
     let rows = '';
     [...entries].reverse().forEach((e, i) => {
       const idx = entries.length - 1 - i;
@@ -407,8 +555,7 @@
       const sign = parseFloat(change) > 0 ? '+' : '';
       const hasMeas = e.meas && Object.values(e.meas).some(v => v);
       rows += `<tr>
-        <td>${e.date}</td>
-        <td><strong>${e.weight}kg</strong></td>
+        <td>${e.date}</td><td><strong>${e.weight}kg</strong></td>
         <td class="${cls}">${change !== null ? sign + change + 'kg' : '—'}</td>
         <td>${hasMeas ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;">Measured</span>' : ''}</td>
         <td><button class="btn btn-danger" onclick="deleteEntry('${e.date}')">Remove</button></td>
@@ -420,79 +567,125 @@
   function renderMeasurements() {
     const el = document.getElementById('measContent');
     const withMeas = entries.filter(e => e.meas && Object.values(e.meas).some(v => v));
-    if (!withMeas.length) { el.innerHTML = '<div class="empty-state">No measurements recorded yet. Add measurements when logging an entry.</div>'; return; }
+    if (!withMeas.length) { el.innerHTML = '<div class="empty-state">No measurements yet.</div>'; return; }
     const keys = ['waist','chest','hips','armL','armR','thighL','thighR'];
     const labels = ['Waist','Chest','Hips','L arm','R arm','L thigh','R thigh'];
-    const rows = [...withMeas].reverse().map(e =>
-      `<tr><td>${e.date}</td>${keys.map(k => `<td>${e.meas[k] || '—'}</td>`).join('')}</tr>`
-    ).join('');
-    el.innerHTML = `<div class="meas-scroll"><table class="meas-table"><thead><tr><th>Date</th>${labels.map(l => `<th>${l}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    el.innerHTML = `<div class="meas-scroll"><table class="meas-table"><thead><tr><th>Date</th>${labels.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>
+      ${[...withMeas].reverse().map(e=>`<tr><td>${e.date}</td>${keys.map(k=>`<td>${e.meas[k]||'—'}</td>`).join('')}</tr>`).join('')}
+    </tbody></table></div>`;
   }
-
-  function showTab(name, btn) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + name).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  const plan = [
-    { day: 'Monday', tag: 'Push', tagClass: 'tag-push', exercises: [
-      { name: 'Barbell bench press', sets: 4, reps: '8–10', note: 'Primary chest builder' },
-      { name: 'Incline dumbbell press', sets: 3, reps: '10–12', note: 'Upper chest' },
-      { name: 'Overhead press', sets: 4, reps: '8–10', note: 'Shoulder mass' },
-      { name: 'Lateral raises', sets: 3, reps: '12–15', note: 'Shoulder width' },
-      { name: 'Tricep pushdowns (cable)', sets: 3, reps: '12–15', note: '' },
-      { name: 'Skull crushers or dips', sets: 3, reps: '10–12', note: '' },
-    ], tip: 'Rest 90s between sets. Focus on slow, controlled lowering phase on every rep.' },
-    { day: 'Tuesday', tag: 'Legs + core', tagClass: 'tag-legs', exercises: [
-      { name: 'Barbell squat', sets: 4, reps: '8–10', note: 'Most important exercise' },
-      { name: 'Leg press', sets: 3, reps: '12–15', note: 'Volume builder' },
-      { name: 'Romanian deadlift', sets: 3, reps: '10–12', note: 'Hamstrings & glutes' },
-      { name: 'Walking lunges', sets: 3, reps: '12 each leg', note: '' },
-      { name: 'Plank hold', sets: 3, reps: '45–60s', note: 'Core stability' },
-      { name: 'Cable crunches', sets: 3, reps: '15–20', note: 'Best ab builder' },
-    ], tip: 'Legs release testosterone & growth hormone — critical for fat loss and upper body growth.' },
-    { day: 'Wednesday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: '20–30 minute walk is ideal. Keep your steps up for extra calorie burn.' },
-    { day: 'Thursday', tag: 'Pull', tagClass: 'tag-pull', exercises: [
-      { name: 'Lat pulldown', sets: 4, reps: '8–10', note: 'Creates V-taper' },
-      { name: 'Barbell or DB rows', sets: 4, reps: '8–10', note: 'Back thickness' },
-      { name: 'Seated cable rows', sets: 3, reps: '12', note: '' },
-      { name: 'Face pulls', sets: 3, reps: '15–20', note: 'Rear delt health' },
-      { name: 'Barbell curls', sets: 3, reps: '10–12', note: 'Bicep mass' },
-      { name: 'Hammer curls', sets: 3, reps: '12 each', note: 'Arm thickness' },
-    ], tip: 'Back width creates the V-taper that makes your waist look smaller — prioritise lat pulldowns.' },
-    { day: 'Friday', tag: 'Legs + core', tagClass: 'tag-legs', exercises: [
-      { name: 'Deadlift', sets: 4, reps: '5–6', note: 'Heavy compound — learn form first' },
-      { name: 'Leg press', sets: 3, reps: '12–15', note: '' },
-      { name: 'Leg extensions', sets: 3, reps: '15', note: 'Quad finisher' },
-      { name: 'Hanging leg raises', sets: 3, reps: '12–15', note: 'Lower abs' },
-      { name: 'Ab wheel rollout', sets: 3, reps: '10–12', note: 'Full core' },
-      { name: '10 min incline treadmill', sets: 1, reps: '—', note: 'Bonus fat burn' },
-    ], tip: 'Deadlift is the king of compound movements. Take time to learn proper form before going heavy.' },
-    { day: 'Saturday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: 'Wedding events, walks, swimming — stay active but no structured training needed.' },
-    { day: 'Sunday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: 'Full recovery day. Great time to prep your OMAD meal for the week ahead.' },
-  ];
 
   function renderTraining() {
-    document.getElementById('trainingPlan').innerHTML = plan.map((d, i) => `
-      <div class="day-card">
+    const today = todayStr();
+    const todayDayName = getDayName(today);
+
+    document.getElementById('trainingPlan').innerHTML = plan.map((d, i) => {
+      const isToday = d.day === todayDayName;
+      const workout = workouts.find(w => w.date === today && w.day === d.day);
+      const recentWorkout = workouts.slice().reverse().find(w => w.day === d.day);
+
+      let badge = '';
+      if (workout) {
+        badge = workout.completed
+          ? '<span class="completed-badge">Completed</span>'
+          : '<span class="skipped-badge">Skipped</span>';
+      } else if (isToday && !d.isRest) {
+        badge = '<span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF9EC;color:#8A5A00;font-weight:500;">Today</span>';
+      }
+
+      const tickSection = !d.isRest ? `
+        <div class="tick-row" id="tickrow-${i}">
+          <div class="tick-checkbox ${workout && workout.completed ? 'ticked' : ''}" id="tick-${i}" onclick="toggleTick(${i},'${d.day}')"></div>
+          <div class="tick-info">
+            <div class="tick-label">${workout && workout.completed ? 'Session completed' : 'Mark as completed'}</div>
+            <div class="tick-date">Date: <input type="date" id="tickdate-${i}" value="${today}" style="display:inline;width:auto;padding:2px 6px;font-size:12px;border-radius:4px;border:1px solid var(--border);background:var(--bg);"></div>
+            <textarea class="tick-notes" id="ticknotes-${i}" placeholder="Optional notes — weight used, how it felt, PBs...">${workout ? workout.notes : ''}</textarea>
+            <div class="tick-save-row">
+              <button class="btn btn-primary" id="tickbtn-${i}" onclick="submitWorkout(${i},'${d.day}',true)" style="padding:7px 16px;font-size:12px;">Save completed</button>
+              <button class="btn" id="skipbtn-${i}" onclick="submitWorkout(${i},'${d.day}',false)" style="padding:7px 16px;font-size:12px;">Mark skipped</button>
+              <div class="tick-spinner" id="ticksp-${i}"></div>
+              <span class="status-msg" id="tickmsg-${i}"></span>
+            </div>
+          </div>
+        </div>` : '';
+
+      return `<div class="day-card">
         <div class="day-header" onclick="toggleDay(${i})">
-          <span class="day-name">${d.day}</span>
+          <div class="day-header-left">
+            <span class="day-name">${d.day}</span>
+            ${badge}
+          </div>
           <div class="day-right">
             <span class="day-tag ${d.tagClass}">${d.tag}</span>
-            <span class="day-chevron" id="chev${i}">&#9660;</span>
+            <span class="day-chevron ${isToday ? 'open' : ''}" id="chev${i}">&#9660;</span>
           </div>
         </div>
-        <div class="day-body" id="day${i}">
+        <div class="day-body ${isToday ? 'open' : ''}" id="day${i}">
+          ${tickSection}
           ${d.exercises.length ? `
             <table class="ex-table">
               <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Notes</th></tr></thead>
-              <tbody>${d.exercises.map(e => `<tr><td class="ex-name">${e.name}</td><td>${e.sets}</td><td>${e.reps}</td><td class="ex-note">${e.note}</td></tr>`).join('')}</tbody>
+              <tbody>${d.exercises.map(e=>`<tr><td class="ex-name">${e.name}</td><td>${e.sets}</td><td>${e.reps}</td><td class="ex-note">${e.note}</td></tr>`).join('')}</tbody>
             </table>` : `<div style="padding:12px 0 4px;font-size:24px;text-align:center;">&#x1F9D8;</div>`}
           <div class="tip-box">${d.tip}</div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
+  }
+
+  function toggleTick(i, dayName) {
+    const el = document.getElementById('tick-' + i);
+    el.classList.toggle('ticked');
+  }
+
+  function submitWorkout(i, dayName, completed) {
+    const date = document.getElementById('tickdate-' + i).value || todayStr();
+    const notes = document.getElementById('ticknotes-' + i).value;
+    saveWorkout(date, dayName, completed, notes, 'tickbtn-' + i, 'ticksp-' + i, 'tickmsg-' + i);
+  }
+
+  function renderWorkoutTab() {
+    const streak = calcStreak();
+    const total = workouts.filter(w => w.completed).length;
+
+    document.getElementById('workoutStreakCard').innerHTML = `
+      <div class="metrics-grid" style="margin-bottom:14px;">
+        <div class="metric accent">
+          <div class="metric-label">Current streak</div>
+          <div class="metric-value">${streak}<span style="font-size:14px;font-weight:400;"> days</span></div>
+          <div class="metric-sub">Consecutive sessions</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Total sessions</div>
+          <div class="metric-value">${total}</div>
+          <div class="metric-sub">Completed workouts</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Skipped</div>
+          <div class="metric-value">${workouts.filter(w=>!w.completed).length}</div>
+          <div class="metric-sub">Missed sessions</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Completion rate</div>
+          <div class="metric-value">${workouts.length ? Math.round(total/workouts.length*100) : 0}<span style="font-size:14px;font-weight:400;">%</span></div>
+          <div class="metric-sub">Of logged days</div>
+        </div>
+      </div>`;
+
+    const el = document.getElementById('workoutHistory');
+    if (!workouts.length) { el.innerHTML = '<div class="empty-state">No workouts logged yet.</div>'; return; }
+
+    let rows = [...workouts].sort((a,b) => b.date.localeCompare(a.date)).map(w => `
+      <tr>
+        <td>${w.date}</td>
+        <td>${w.day}</td>
+        <td>${w.completed
+          ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;font-weight:500;">Done</span>'
+          : '<span style="font-size:11px;background:var(--danger-light);color:var(--danger);padding:2px 8px;border-radius:20px;font-weight:500;">Skipped</span>'}</td>
+        <td style="font-size:12px;color:var(--text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w.notes || '—'}</td>
+      </tr>`).join('');
+
+    el.innerHTML = `<table class="history-table"><thead><tr><th>Date</th><th>Day</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
   function toggleDay(i) {
@@ -501,8 +694,7 @@
   }
 
   document.getElementById('entryDate').valueAsDate = new Date();
-  renderTraining();
-  fetchEntries();
+  fetchAll();
 </script>
 </body>
 </html>
