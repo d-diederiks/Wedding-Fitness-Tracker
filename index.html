@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Fitness Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EF;
+    --bg-card: #FFFFFF;
+    --bg-muted: #F0EDE7;
+    --text: #1A1714;
+    --text-muted: #7A746C;
+    --text-hint: #B0A89E;
+    --accent: #2D5A3D;
+    --accent-light: #E8F0EA;
+    --accent-mid: #4A8C62;
+    --danger: #C0392B;
+    --danger-light: #FDECEA;
+    --border: #E3DDD5;
+    --border-strong: #C8C0B4;
+    --shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+
+  header { background: var(--accent); padding: 28px 32px 24px; color: white; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; right: -40px; top: -40px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+  header::after { content: ''; position: absolute; right: 60px; bottom: -60px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+  .header-sub { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.65; margin-bottom: 6px; }
+  .header-title { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; line-height: 1.2; }
+  .header-meta { margin-top: 16px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .header-stat-label { font-size: 11px; opacity: 0.6; letter-spacing: 0.08em; text-transform: uppercase; }
+  .header-stat-value { font-size: 20px; font-weight: 600; }
+  .countdown-bar-wrap { margin-top: 16px; background: rgba(255,255,255,0.15); border-radius: 20px; height: 5px; }
+  .countdown-bar { height: 5px; border-radius: 20px; background: rgba(255,255,255,0.8); transition: width 0.5s; }
+  .countdown-label { display: flex; justify-content: space-between; margin-top: 5px; font-size: 11px; opacity: 0.55; }
+
+  nav { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); overflow-x: auto; position: sticky; top: 0; z-index: 100; }
+  .nav-btn { padding: 14px 20px; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; transition: all 0.15s; letter-spacing: 0.02em; }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  main { max-width: 800px; margin: 0 auto; padding: 24px 16px 60px; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; margin-bottom: 14px; box-shadow: var(--shadow); }
+  .card-title { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; color: var(--text); margin-bottom: 16px; }
+
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .metric { background: var(--bg-muted); border-radius: var(--radius-sm); padding: 14px; }
+  .metric-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); margin-bottom: 4px; }
+  .metric-value { font-size: 24px; font-weight: 600; color: var(--text); line-height: 1; }
+  .metric-sub { font-size: 11px; color: var(--text-hint); margin-top: 4px; }
+  .metric.accent { background: var(--accent-light); }
+  .metric.accent .metric-value { color: var(--accent); }
+  .metric.accent .metric-label { color: var(--accent-mid); }
+
+  label { display: block; font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 5px; }
+  input[type=number], input[type=date] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; transition: border-color 0.15s; outline: none; }
+  input:focus { border-color: var(--accent); }
+
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .form-divider { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-hint); margin: 16px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .form-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: transparent; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+  .btn:hover { background: var(--bg-muted); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); color: white; border-color: transparent; }
+  .btn-primary:hover { background: #244d32; }
+  .btn-danger { background: none; border-color: var(--border); color: var(--danger); font-size: 12px; padding: 6px 12px; }
+  .btn-danger:hover { background: var(--danger-light); }
+
+  .status-bar { display: flex; align-items: center; gap: 10px; margin-top: 12px; min-height: 22px; }
+  .status-msg { font-size: 13px; }
+  .status-msg.success { color: var(--accent); }
+  .status-msg.error { color: var(--danger); }
+
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+  .spinner.show { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sync-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .sync-badge.ok { background: var(--accent-light); color: var(--accent); }
+  .sync-badge.err { background: var(--danger-light); color: var(--danger); }
+  .sync-badge.loading { background: var(--bg-muted); color: var(--text-muted); }
+
+  .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .history-table th { text-align: left; padding: 6px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
+  .history-table td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .history-table tr:last-child td { border: none; }
+  .history-table tr:hover td { background: var(--bg-muted); }
+  .change-down { color: var(--accent); font-weight: 500; }
+  .change-up { color: var(--danger); font-weight: 500; }
+  .empty-state { text-align: center; padding: 32px 20px; color: var(--text-hint); font-size: 14px; }
+
+  .day-card { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
+  .day-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: var(--bg-card); transition: background 0.15s; user-select: none; }
+  .day-header:hover { background: var(--bg-muted); }
+  .day-name { font-weight: 600; font-size: 15px; }
+  .day-right { display: flex; align-items: center; gap: 10px; }
+  .day-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; letter-spacing: 0.04em; }
+  .tag-push { background: #E8F4FD; color: #1A5C8A; }
+  .tag-pull { background: #E8F7EF; color: #1A6B3A; }
+  .tag-legs { background: #FEF9EC; color: #8A5A00; }
+  .tag-rest { background: var(--bg-muted); color: var(--text-muted); }
+  .day-chevron { font-size: 12px; color: var(--text-hint); transition: transform 0.2s; }
+  .day-chevron.open { transform: rotate(180deg); }
+  .day-body { display: none; padding: 0 18px 16px; background: var(--bg-card); border-top: 1px solid var(--border); }
+  .day-body.open { display: block; }
+
+  .ex-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .ex-table th { text-align: left; padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
+  .ex-table td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
+  .ex-table tr:last-child td { border: none; }
+  .ex-name { font-weight: 500; }
+  .ex-note { font-size: 11px; color: var(--text-hint); }
+  .tip-box { margin-top: 12px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; color: var(--accent); }
+
+  .meas-scroll { overflow-x: auto; }
+  .meas-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .meas-table th { padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .meas-table td { padding: 8px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  .meas-table tr:last-child td { border: none; }
+  .cloud-note { font-size: 12px; color: var(--text-hint); display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+
+  @media (max-width: 500px) {
+    header { padding: 20px 16px; }
+    .header-title { font-size: 22px; }
+    .nav-btn { padding: 12px 14px; font-size: 12px; }
+    main { padding: 16px 12px 50px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-sub">Wedding fitness tracker</div>
+  <div class="header-title" id="headerTitle">Loading...</div>
+  <div class="header-meta">
+    <div class="header-stat">
+      <div class="header-stat-label">Current weight</div>
+      <div class="header-stat-value" id="hCurrentW">—</div>
+    </div>
+    <div class="header-stat">
+      <div class="header-stat-label">Lost so far</div>
+      <div class="header-stat-value" id="hLost">—</div>
+    </div>
+    <div class="header-stat">
+      <div class="header-stat-label">Days to wedding</div>
+      <div class="header-stat-value" id="hDays">—</div>
+    </div>
+  </div>
+  <div class="countdown-bar-wrap">
+    <div class="countdown-bar" id="countdownBar" style="width:0%"></div>
+  </div>
+  <div class="countdown-label">
+    <span>Start: 30 Mar 2025</span>
+    <span>Wedding: 3 Oct 2025</span>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" onclick="showTab('dashboard',this)">Dashboard</button>
+  <button class="nav-btn" onclick="showTab('log',this)">Log entry</button>
+  <button class="nav-btn" onclick="showTab('history',this)">History</button>
+  <button class="nav-btn" onclick="showTab('measurements',this)">Measurements</button>
+  <button class="nav-btn" onclick="showTab('training',this)">Training plan</button>
+</nav>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="section active">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span style="font-size:13px;color:var(--text-muted);">Synced with Google Sheets</span>
+      <span class="sync-badge loading" id="syncBadge">Loading...</span>
+    </div>
+    <div class="metrics-grid" id="dashMetrics"></div>
+    <div class="card" id="dashMeasCard" style="display:none">
+      <div class="card-title">Latest measurements</div>
+      <div id="dashMeasDisplay"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">How to use</div>
+      <p style="font-size:13px;color:var(--text-muted);line-height:1.7;">Log your weight every morning before eating. Do full body measurements every 2 weeks on the same day at the same time. Your data saves directly to Google Sheets — accessible from any device, any browser, anywhere. You can also open your Google Sheet directly to see all your raw data.</p>
+    </div>
+  </div>
+
+  <!-- LOG ENTRY -->
+  <div id="tab-log" class="section">
+    <div class="card">
+      <div class="card-title">Log an entry</div>
+      <div class="form-grid">
+        <div><label>Date</label><input type="date" id="entryDate"></div>
+        <div><label>Weight (kg)</label><input type="number" id="entryWeight" placeholder="e.g. 97.5" step="0.1" min="50" max="200"></div>
+      </div>
+      <div class="form-divider">Measurements — optional, do every 2 weeks</div>
+      <div class="form-grid">
+        <div><label>Waist (cm)</label><input type="number" id="mWaist" placeholder="cm" step="0.1"></div>
+        <div><label>Chest (cm)</label><input type="number" id="mChest" placeholder="cm" step="0.1"></div>
+        <div><label>Hips (cm)</label><input type="number" id="mHips" placeholder="cm" step="0.1"></div>
+        <div><label>Left arm (cm)</label><input type="number" id="mArmL" placeholder="cm" step="0.1"></div>
+        <div><label>Right arm (cm)</label><input type="number" id="mArmR" placeholder="cm" step="0.1"></div>
+        <div><label>Left thigh (cm)</label><input type="number" id="mThighL" placeholder="cm" step="0.1"></div>
+        <div><label>Right thigh (cm)</label><input type="number" id="mThighR" placeholder="cm" step="0.1"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <button class="btn btn-primary" id="saveBtn" onclick="saveEntry()">Save to Google Sheets</button>
+        <div class="spinner" id="saveSpinner"></div>
+        <span class="status-msg" id="saveMsg"></span>
+      </div>
+      <div class="cloud-note">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
+        Data saves directly to your Google Sheet — accessible from any device
+      </div>
+    </div>
+  </div>
+
+  <!-- WEIGHT HISTORY -->
+  <div id="tab-history" class="section">
+    <div class="card">
+      <div class="card-title">Weight log</div>
+      <div id="historyContent"><div class="empty-state">Loading from Google Sheets...</div></div>
+    </div>
+  </div>
+
+  <!-- MEASUREMENTS -->
+  <div id="tab-measurements" class="section">
+    <div class="card">
+      <div class="card-title">Measurement history</div>
+      <div id="measContent"><div class="empty-state">Loading from Google Sheets...</div></div>
+    </div>
+  </div>
+
+  <!-- TRAINING PLAN -->
+  <div id="tab-training" class="section">
+    <div class="card" style="margin-bottom:14px;">
+      <div class="card-title">Your 6-month training plan</div>
+      <p style="font-size:13px;color:var(--text-muted);">4 training days per week. Push / Pull / Legs split. Tap each day to expand. Rest 60–90 seconds between sets. Add a little weight each week when you can complete all reps cleanly.</p>
+    </div>
+    <div id="trainingPlan"></div>
+  </div>
+
+</main>
+
+<script>
+  const API = 'https://script.google.com/macros/s/AKfycbwO4a_ISgNCMQgt8Ds94OpCdgur1Q-lfmqZNsuSBmGiGVVno4DgHJOAmJ79LiuLjdjUBA/exec';
+  const WEDDING = new Date('2025-10-03');
+  const START_DATE = new Date('2025-03-30');
+  const START_WEIGHT = 98;
+  let entries = [];
+
+  async function fetchEntries() {
+    setSyncBadge('loading', 'Syncing...');
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      entries = (data.entries || []).sort((a, b) => a.date.localeCompare(b.date));
+      setSyncBadge('ok', 'Synced');
+    } catch (err) {
+      setSyncBadge('err', 'Offline — check connection');
+    }
+    renderAll();
+  }
+
+  function setSyncBadge(type, text) {
+    const b = document.getElementById('syncBadge');
+    b.className = 'sync-badge ' + type;
+    b.textContent = text;
+  }
+
+  async function saveEntry() {
+    const d = document.getElementById('entryDate').value;
+    const w = parseFloat(document.getElementById('entryWeight').value);
+    if (!d || !w) { showMsg('saveMsg', 'Please enter a date and weight.', 'error'); return; }
+    const meas = {
+      waist:  parseFloat(document.getElementById('mWaist').value)  || null,
+      chest:  parseFloat(document.getElementById('mChest').value)  || null,
+      hips:   parseFloat(document.getElementById('mHips').value)   || null,
+      armL:   parseFloat(document.getElementById('mArmL').value)   || null,
+      armR:   parseFloat(document.getElementById('mArmR').value)   || null,
+      thighL: parseFloat(document.getElementById('mThighL').value) || null,
+      thighR: parseFloat(document.getElementById('mThighR').value) || null,
+    };
+    setLoading(true);
+    try {
+      await fetch(API, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'saveEntry', entry: { date: d, weight: w, meas } })
+      });
+      ['mWaist','mChest','mHips','mArmL','mArmR','mThighL','mThighR'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('entryWeight').value = '';
+      showMsg('saveMsg', 'Saved to Google Sheets!', 'success');
+      await fetchEntries();
+    } catch (err) {
+      showMsg('saveMsg', 'Save failed — check your connection.', 'error');
+    }
+    setLoading(false);
+  }
+
+  async function deleteEntry(date) {
+    if (!confirm('Delete entry for ' + date + '?')) return;
+    try {
+      await fetch(API, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'deleteEntry', date })
+      });
+      await fetchEntries();
+    } catch (err) {
+      alert('Delete failed — check your connection.');
+    }
+  }
+
+  function setLoading(on) {
+    document.getElementById('saveBtn').disabled = on;
+    document.getElementById('saveSpinner').className = 'spinner' + (on ? ' show' : '');
+  }
+
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = 'status-msg ' + type;
+    setTimeout(() => { el.textContent = ''; el.className = 'status-msg'; }, 3500);
+  }
+
+  function renderAll() {
+    renderHeader();
+    renderDashboard();
+    renderHistory();
+    renderMeasurements();
+  }
+
+  function renderHeader() {
+    const now = new Date();
+    const daysLeft = Math.max(0, Math.ceil((WEDDING - now) / 86400000));
+    const totalDays = Math.ceil((WEDDING - START_DATE) / 86400000);
+    const progress = Math.min(100, Math.round((1 - daysLeft / totalDays) * 100));
+    document.getElementById('hDays').textContent = daysLeft;
+    document.getElementById('countdownBar').style.width = progress + '%';
+    const latest = entries[entries.length - 1];
+    const currentW = latest ? latest.weight : START_WEIGHT;
+    const lost = Math.max(0, START_WEIGHT - currentW).toFixed(1);
+    document.getElementById('hCurrentW').textContent = currentW + 'kg';
+    document.getElementById('hLost').textContent = lost + 'kg';
+    const weeksLeft = Math.ceil(daysLeft / 7);
+    document.getElementById('headerTitle').textContent = weeksLeft + ' weeks to go \u2014 you\'ve got this.';
+  }
+
+  function renderDashboard() {
+    const latest = entries[entries.length - 1];
+    const currentW = latest ? latest.weight : START_WEIGHT;
+    const lost = Math.max(0, START_WEIGHT - currentW).toFixed(1);
+    const toGo = Math.max(0, currentW - 78).toFixed(1);
+    const bmi = (currentW / (1.75 * 1.75)).toFixed(1);
+    const now = new Date();
+    const daysLeft = Math.max(0, Math.ceil((WEDDING - now) / 86400000));
+    document.getElementById('dashMetrics').innerHTML = `
+      <div class="metric accent">
+        <div class="metric-label">Current weight</div>
+        <div class="metric-value">${currentW}<span style="font-size:14px;font-weight:400;">kg</span></div>
+        <div class="metric-sub">Started: ${START_WEIGHT}kg</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Lost so far</div>
+        <div class="metric-value">${lost}<span style="font-size:14px;font-weight:400;">kg</span></div>
+        <div class="metric-sub">${entries.length} entries logged</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">To target (78kg)</div>
+        <div class="metric-value">${toGo}<span style="font-size:14px;font-weight:400;">kg</span></div>
+        <div class="metric-sub">${Math.ceil(daysLeft / 7)} weeks left</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">BMI</div>
+        <div class="metric-value">${bmi}</div>
+        <div class="metric-sub">Goal: below 25</div>
+      </div>`;
+    if (latest && latest.meas) {
+      const m = latest.meas;
+      const rows = [['Waist',m.waist],['Chest',m.chest],['Hips',m.hips],['Left arm',m.armL],['Right arm',m.armR],['Left thigh',m.thighL],['Right thigh',m.thighR]].filter(r => r[1]);
+      if (rows.length) {
+        document.getElementById('dashMeasCard').style.display = 'block';
+        document.getElementById('dashMeasDisplay').innerHTML =
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Recorded on ${latest.date}</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;">
+            ${rows.map(([l,v]) => `<div class="metric"><div class="metric-label">${l}</div><div class="metric-value" style="font-size:18px;">${v}<span style="font-size:12px;font-weight:400;">cm</span></div></div>`).join('')}
+          </div>`;
+      }
+    }
+  }
+
+  function renderHistory() {
+    const el = document.getElementById('historyContent');
+    if (!entries.length) { el.innerHTML = '<div class="empty-state">No entries yet. Start logging from the "Log entry" tab.</div>'; return; }
+    let rows = '';
+    [...entries].reverse().forEach((e, i) => {
+      const idx = entries.length - 1 - i;
+      const prev = idx > 0 ? entries[idx - 1] : null;
+      const change = prev ? (e.weight - prev.weight).toFixed(1) : null;
+      const cls = change !== null ? (parseFloat(change) < 0 ? 'change-down' : parseFloat(change) > 0 ? 'change-up' : '') : '';
+      const sign = parseFloat(change) > 0 ? '+' : '';
+      const hasMeas = e.meas && Object.values(e.meas).some(v => v);
+      rows += `<tr>
+        <td>${e.date}</td>
+        <td><strong>${e.weight}kg</strong></td>
+        <td class="${cls}">${change !== null ? sign + change + 'kg' : '—'}</td>
+        <td>${hasMeas ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;">Measured</span>' : ''}</td>
+        <td><button class="btn btn-danger" onclick="deleteEntry('${e.date}')">Remove</button></td>
+      </tr>`;
+    });
+    el.innerHTML = `<table class="history-table"><thead><tr><th>Date</th><th>Weight</th><th>Change</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function renderMeasurements() {
+    const el = document.getElementById('measContent');
+    const withMeas = entries.filter(e => e.meas && Object.values(e.meas).some(v => v));
+    if (!withMeas.length) { el.innerHTML = '<div class="empty-state">No measurements recorded yet. Add measurements when logging an entry.</div>'; return; }
+    const keys = ['waist','chest','hips','armL','armR','thighL','thighR'];
+    const labels = ['Waist','Chest','Hips','L arm','R arm','L thigh','R thigh'];
+    const rows = [...withMeas].reverse().map(e =>
+      `<tr><td>${e.date}</td>${keys.map(k => `<td>${e.meas[k] || '—'}</td>`).join('')}</tr>`
+    ).join('');
+    el.innerHTML = `<div class="meas-scroll"><table class="meas-table"><thead><tr><th>Date</th>${labels.map(l => `<th>${l}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function showTab(name, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  const plan = [
+    { day: 'Monday', tag: 'Push', tagClass: 'tag-push', exercises: [
+      { name: 'Barbell bench press', sets: 4, reps: '8–10', note: 'Primary chest builder' },
+      { name: 'Incline dumbbell press', sets: 3, reps: '10–12', note: 'Upper chest' },
+      { name: 'Overhead press', sets: 4, reps: '8–10', note: 'Shoulder mass' },
+      { name: 'Lateral raises', sets: 3, reps: '12–15', note: 'Shoulder width' },
+      { name: 'Tricep pushdowns (cable)', sets: 3, reps: '12–15', note: '' },
+      { name: 'Skull crushers or dips', sets: 3, reps: '10–12', note: '' },
+    ], tip: 'Rest 90s between sets. Focus on slow, controlled lowering phase on every rep.' },
+    { day: 'Tuesday', tag: 'Legs + core', tagClass: 'tag-legs', exercises: [
+      { name: 'Barbell squat', sets: 4, reps: '8–10', note: 'Most important exercise' },
+      { name: 'Leg press', sets: 3, reps: '12–15', note: 'Volume builder' },
+      { name: 'Romanian deadlift', sets: 3, reps: '10–12', note: 'Hamstrings & glutes' },
+      { name: 'Walking lunges', sets: 3, reps: '12 each leg', note: '' },
+      { name: 'Plank hold', sets: 3, reps: '45–60s', note: 'Core stability' },
+      { name: 'Cable crunches', sets: 3, reps: '15–20', note: 'Best ab builder' },
+    ], tip: 'Legs release testosterone & growth hormone — critical for fat loss and upper body growth.' },
+    { day: 'Wednesday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: '20–30 minute walk is ideal. Keep your steps up for extra calorie burn.' },
+    { day: 'Thursday', tag: 'Pull', tagClass: 'tag-pull', exercises: [
+      { name: 'Lat pulldown', sets: 4, reps: '8–10', note: 'Creates V-taper' },
+      { name: 'Barbell or DB rows', sets: 4, reps: '8–10', note: 'Back thickness' },
+      { name: 'Seated cable rows', sets: 3, reps: '12', note: '' },
+      { name: 'Face pulls', sets: 3, reps: '15–20', note: 'Rear delt health' },
+      { name: 'Barbell curls', sets: 3, reps: '10–12', note: 'Bicep mass' },
+      { name: 'Hammer curls', sets: 3, reps: '12 each', note: 'Arm thickness' },
+    ], tip: 'Back width creates the V-taper that makes your waist look smaller — prioritise lat pulldowns.' },
+    { day: 'Friday', tag: 'Legs + core', tagClass: 'tag-legs', exercises: [
+      { name: 'Deadlift', sets: 4, reps: '5–6', note: 'Heavy compound — learn form first' },
+      { name: 'Leg press', sets: 3, reps: '12–15', note: '' },
+      { name: 'Leg extensions', sets: 3, reps: '15', note: 'Quad finisher' },
+      { name: 'Hanging leg raises', sets: 3, reps: '12–15', note: 'Lower abs' },
+      { name: 'Ab wheel rollout', sets: 3, reps: '10–12', note: 'Full core' },
+      { name: '10 min incline treadmill', sets: 1, reps: '—', note: 'Bonus fat burn' },
+    ], tip: 'Deadlift is the king of compound movements. Take time to learn proper form before going heavy.' },
+    { day: 'Saturday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: 'Wedding events, walks, swimming — stay active but no structured training needed.' },
+    { day: 'Sunday', tag: 'Rest', tagClass: 'tag-rest', exercises: [], tip: 'Full recovery day. Great time to prep your OMAD meal for the week ahead.' },
+  ];
+
+  function renderTraining() {
+    document.getElementById('trainingPlan').innerHTML = plan.map((d, i) => `
+      <div class="day-card">
+        <div class="day-header" onclick="toggleDay(${i})">
+          <span class="day-name">${d.day}</span>
+          <div class="day-right">
+            <span class="day-tag ${d.tagClass}">${d.tag}</span>
+            <span class="day-chevron" id="chev${i}">&#9660;</span>
+          </div>
+        </div>
+        <div class="day-body" id="day${i}">
+          ${d.exercises.length ? `
+            <table class="ex-table">
+              <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th>Notes</th></tr></thead>
+              <tbody>${d.exercises.map(e => `<tr><td class="ex-name">${e.name}</td><td>${e.sets}</td><td>${e.reps}</td><td class="ex-note">${e.note}</td></tr>`).join('')}</tbody>
+            </table>` : `<div style="padding:12px 0 4px;font-size:24px;text-align:center;">&#x1F9D8;</div>`}
+          <div class="tip-box">${d.tip}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  function toggleDay(i) {
+    document.getElementById('day' + i).classList.toggle('open');
+    document.getElementById('chev' + i).classList.toggle('open');
+  }
+
+  document.getElementById('entryDate').valueAsDate = new Date();
+  renderTraining();
+  fetchEntries();
+</script>
+</body>
+</html>
