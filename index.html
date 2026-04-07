@@ -92,12 +92,20 @@
 
   .history-table { width: 100%; border-collapse: collapse; font-size: 13px; }
   .history-table th { text-align: left; padding: 6px 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); }
-  .history-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .history-table td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
   .history-table tr:last-child td { border: none; }
   .history-table tr:hover td { background: var(--bg-muted); }
   .change-down { color: var(--accent); font-weight: 500; }
   .change-up { color: var(--danger); font-weight: 500; }
   .empty-state { text-align: center; padding: 32px 20px; color: var(--text-hint); font-size: 14px; }
+
+  /* Expandable history rows */
+  .expand-btn { font-size: 11px; color: var(--accent); cursor: pointer; background: none; border: none; padding: 0; font-family: 'DM Sans', sans-serif; text-decoration: underline; }
+  .detail-row td { background: var(--bg-muted); padding: 10px 14px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; margin-top: 6px; }
+  .detail-cell { background: var(--bg-card); border-radius: var(--radius-sm); padding: 8px 10px; }
+  .detail-cell-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); }
+  .detail-cell-value { font-size: 13px; font-weight: 500; color: var(--text); margin-top: 2px; }
 
   /* Training plan */
   .day-card { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
@@ -126,23 +134,12 @@
   .tick-date { font-size: 12px; color: var(--text-hint); margin-bottom: 8px; }
   .tick-notes { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 13px; background: white; color: var(--text); outline: none; resize: vertical; min-height: 56px; }
   .tick-notes:focus { border-color: var(--accent); }
-  .tick-save-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .tick-save-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
   .tick-spinner { width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
   .tick-spinner.show { display: inline-block; }
 
-  /* Completion badge on day header */
   .completed-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--accent-light); color: var(--accent); font-weight: 500; }
   .skipped-badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--danger-light); color: var(--danger); font-weight: 500; }
-
-  /* Workout history */
-  .workout-week { margin-bottom: 20px; }
-  .workout-week-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); font-weight: 500; margin-bottom: 8px; }
-  .workout-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .workout-day-cell { aspect-ratio: 1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; border: 1px solid var(--border); background: var(--bg-muted); color: var(--text-hint); cursor: default; position: relative; }
-  .workout-day-cell.done { background: var(--accent); border-color: var(--accent); color: white; }
-  .workout-day-cell.rest { background: var(--bg-muted); color: var(--text-hint); border-style: dashed; }
-  .workout-day-cell.missed { background: var(--danger-light); border-color: #f5c5c0; color: var(--danger); }
-  .workout-day-cell .cell-label { font-size: 9px; position: absolute; bottom: 3px; left: 0; right: 0; text-align: center; }
 
   .streak-banner { background: var(--accent-light); border: 1px solid #c0dbc8; border-radius: var(--radius-sm); padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
   .streak-num { font-size: 28px; font-weight: 600; color: var(--accent); line-height: 1; }
@@ -160,6 +157,14 @@
   .ex-weight-input::placeholder { color: var(--text-hint); }
   .tip-box { margin-top: 14px; background: var(--accent-light); border-left: 3px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 14px; font-size: 13px; color: var(--accent); }
 
+  /* Workout notes panel */
+  .workout-notes-panel { background: var(--bg-muted); border-radius: var(--radius-sm); padding: 10px 12px; margin-top: 6px; font-size: 12px; }
+  .workout-notes-panel-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-hint); margin-bottom: 6px; font-weight: 500; }
+  .workout-ex-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+  .workout-ex-row:last-child { border: none; }
+  .workout-ex-name { color: var(--text-muted); }
+  .workout-ex-weight { font-weight: 500; color: var(--text); }
+
   .meas-scroll { overflow-x: auto; }
   .meas-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .meas-table th { padding: 5px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-hint); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; }
@@ -173,7 +178,6 @@
     .header-title { font-size: 22px; }
     .nav-btn { padding: 12px 14px; font-size: 12px; }
     main { padding: 16px 12px 50px; }
-    .workout-grid { grid-template-columns: repeat(7, 1fr); }
   }
 </style>
 </head>
@@ -212,6 +216,7 @@
   <button class="nav-btn" onclick="showTab('measurements',this)">Measurements</button>
   <button class="nav-btn" onclick="showTab('training',this)">Training plan</button>
   <button class="nav-btn" onclick="showTab('workouts',this)">Workouts</button>
+  <button class="nav-btn" onclick="showTab('charts',this)">Charts</button>
 </nav>
 
 <main>
@@ -246,7 +251,6 @@
         <div><label>Date</label><input type="date" id="entryDate"></div>
         <div><label>Weight (kg)</label><input type="number" id="entryWeight" placeholder="e.g. 97.5" step="0.1" min="50" max="200"></div>
       </div>
-
       <div class="form-divider">Body composition — from your scale</div>
       <div class="form-grid">
         <div><label>BMI</label><input type="number" id="scBmi" placeholder="e.g. 31.8" step="0.1"></div>
@@ -264,7 +268,6 @@
         <div><label>Fat-free body (kg)</label><input type="number" id="scFatFreeBody" placeholder="e.g. 68.7" step="0.1"></div>
         <div><label>Waist-hip ratio</label><input type="number" id="scWaistHip" placeholder="e.g. 0.9" step="0.01"></div>
       </div>
-
       <div class="form-divider">Body measurements — optional, do every 2 weeks</div>
       <div class="form-grid">
         <div><label>Waist (cm)</label><input type="number" id="mWaist" placeholder="cm" step="0.1"></div>
@@ -275,7 +278,6 @@
         <div><label>Left thigh (cm)</label><input type="number" id="mThighL" placeholder="cm" step="0.1"></div>
         <div><label>Right thigh (cm)</label><input type="number" id="mThighR" placeholder="cm" step="0.1"></div>
       </div>
-
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <button class="btn btn-primary" id="saveBtn" onclick="saveEntry()">Save to Google Sheets</button>
         <div class="spinner" id="saveSpinner"></div>
@@ -318,12 +320,33 @@
     <div id="workoutStreakCard"></div>
     <div class="card">
       <div class="card-title">Workout history</div>
-      <div id="workoutHistory"><div class="empty-state">No workouts logged yet. Tick off sessions in the Training plan tab.</div></div>
+      <div id="workoutHistory"><div class="empty-state">No workouts logged yet.</div></div>
     </div>
+  </div>
+  <!-- CHARTS -->
+  <div id="tab-charts" class="section">
+    <div class="card">
+      <div class="card-title">Weight over time</div>
+      <div style="position:relative;height:260px;"><canvas id="chartWeight"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Body fat % over time</div>
+      <div style="position:relative;height:240px;"><canvas id="chartBodyFat"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Muscle mass over time</div>
+      <div style="position:relative;height:240px;"><canvas id="chartMuscle"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Visceral fat over time</div>
+      <div style="position:relative;height:240px;"><canvas id="chartVisceral"></canvas></div>
+    </div>
+    <p style="font-size:12px;color:var(--text-hint);text-align:center;margin-top:-4px;">Charts update as you log more entries. Body composition charts only show on days you entered scale data.</p>
   </div>
 
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
   const API = 'https://script.google.com/macros/s/AKfycbwxRqaBrYVoNlcWoDmLjIkJSigQWJAd8pmD1YoRnkpMoOYfOgKIRTHR5jXVYoafi7P7Wg/exec';
   const WEDDING = new Date('2026-10-03');
@@ -343,9 +366,9 @@
     ], tip: 'Rest 90s between sets. Focus on slow, controlled lowering phase on every rep.' },
     { day: 'Tuesday', tag: 'Legs + core', tagClass: 'tag-legs', isRest: false, exercises: [
       { name: 'Barbell squat', sets: 4, reps: '8–10', note: 'Most important exercise' },
-      { name: 'Leg press', sets: 3, reps: '12–15', note: 'Volume builder' },
+      { name: 'Bulgarian split squat', sets: 3, reps: '10–12 each leg', note: 'Dumbbells or barbell, foot on bench' },
       { name: 'Romanian deadlift', sets: 3, reps: '10–12', note: 'Hamstrings & glutes' },
-      { name: 'Walking lunges', sets: 3, reps: '12 each leg', note: '' },
+      { name: 'Walking lunges', sets: 3, reps: '12 each leg', note: 'Add dumbbells for extra load' },
       { name: 'Plank hold', sets: 3, reps: '45–60s', note: 'Core stability' },
       { name: 'Cable crunches', sets: 3, reps: '15–20', note: 'Best ab builder' },
     ], tip: 'Legs release testosterone & growth hormone — critical for fat loss and upper body growth.' },
@@ -360,7 +383,7 @@
     ], tip: 'Back width creates the V-taper that makes your waist look smaller — prioritise lat pulldowns.' },
     { day: 'Friday', tag: 'Legs + core', tagClass: 'tag-legs', isRest: false, exercises: [
       { name: 'Deadlift', sets: 4, reps: '5–6', note: 'Heavy compound — learn form first' },
-      { name: 'Leg press', sets: 3, reps: '12–15', note: '' },
+      { name: 'Dumbbell reverse lunges', sets: 3, reps: '12 each leg', note: 'Easier on knees than forward lunges' },
       { name: 'Leg extensions', sets: 3, reps: '15', note: 'Quad finisher' },
       { name: 'Hanging leg raises', sets: 3, reps: '12–15', note: 'Lower abs' },
       { name: 'Ab wheel rollout', sets: 3, reps: '10–12', note: 'Full core' },
@@ -370,10 +393,26 @@
     { day: 'Sunday', tag: 'Rest', tagClass: 'tag-rest', isRest: true, exercises: [], tip: 'Full recovery day. Great time to prep your OMAD meal for the week ahead.' },
   ];
 
-  // ── Data helpers ──────────────────────────────────────────────
+  // ── Utilities ─────────────────────────────────────────────────
 
-  function getWorkoutForDate(date) {
-    return workouts.find(w => w.date === date) || null;
+  function fmtDate(dateStr) {
+    if (!dateStr) return '';
+    const s = String(dateStr);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const d = new Date(s);
+    const y = d.getUTCFullYear();
+    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  function fmtChange(diff, unit, lowerIsBetter) {
+    if (diff === null || isNaN(diff)) return '';
+    const improved = lowerIsBetter ? diff < 0 : diff > 0;
+    const neutral = diff === 0;
+    const color = neutral ? 'var(--text-hint)' : improved ? 'var(--accent)' : 'var(--danger)';
+    const sign = diff > 0 ? '+' : '';
+    return `<span style="font-size:11px;font-weight:500;color:${color};">${sign}${diff.toFixed(1)}${unit}</span>`;
   }
 
   function todayStr() {
@@ -390,7 +429,6 @@
     if (!completed.length) return 0;
     let streak = 0;
     let check = new Date(todayStr());
-    // allow today or yesterday as most recent
     const latest = new Date(completed[completed.length - 1]);
     const diff = Math.floor((new Date(todayStr()) - latest) / 86400000);
     if (diff > 1) return 0;
@@ -403,7 +441,7 @@
     return streak;
   }
 
-  // ── API calls ─────────────────────────────────────────────────
+  // ── API ───────────────────────────────────────────────────────
 
   async function fetchAll() {
     setSyncBadge('loading', 'Syncing...');
@@ -494,19 +532,96 @@
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     btn.classList.add('active');
+    if (name === 'charts') renderCharts();
   }
 
-  // ── Utilities ─────────────────────────────────────────────────
+  function toggleDetail(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
+  }
 
-  function fmtDate(dateStr) {
-    if (!dateStr) return '';
-    const s = String(dateStr);
-    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-    const d = new Date(s);
-    const y = d.getUTCFullYear();
-    const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(d.getUTCDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
+  // ── Charts ────────────────────────────────────────────────────
+
+  const chartInstances = {};
+
+  function destroyChart(id) {
+    if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+  }
+
+  function buildChart(id, label, data, color, targetLine) {
+    destroyChart(id);
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    if (!data.labels.length) {
+      canvas.getContext('2d');
+      const parent = canvas.parentElement;
+      parent.innerHTML = '<p style="text-align:center;color:var(--text-hint);font-size:13px;padding-top:80px;">No data yet — keep logging!</p>';
+      return;
+    }
+    const ctx = canvas.getContext('2d');
+    const datasets = [{
+      label,
+      data: data.values,
+      borderColor: color,
+      backgroundColor: color + '18',
+      borderWidth: 2,
+      pointRadius: 4,
+      pointBackgroundColor: color,
+      tension: 0.3,
+      fill: true,
+    }];
+    if (targetLine !== undefined) {
+      datasets.push({
+        label: 'Target (' + targetLine + 'kg)',
+        data: data.labels.map(() => targetLine),
+        borderColor: '#C0392B88',
+        borderWidth: 1.5,
+        borderDash: [6, 4],
+        pointRadius: 0,
+        fill: false,
+      });
+    }
+    chartInstances[id] = new Chart(ctx, {
+      type: 'line',
+      data: { labels: data.labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: targetLine !== undefined, labels: { font: { size: 11 }, color: '#7A746C', boxWidth: 20 } },
+          tooltip: { callbacks: { label: c => ' ' + c.parsed.y } }
+        },
+        scales: {
+          x: { ticks: { font: { size: 11 }, color: '#B0A89E', maxTicksLimit: 8 }, grid: { color: '#E3DDD5' } },
+          y: { ticks: { font: { size: 11 }, color: '#B0A89E' }, grid: { color: '#E3DDD5' } }
+        }
+      }
+    });
+  }
+
+  function renderCharts() {
+    buildChart('chartWeight', 'Weight (kg)', {
+      labels: entries.map(e => fmtDate(e.date)),
+      values: entries.map(e => e.weight)
+    }, '#2D5A3D', 85);
+
+    const fatEntries = entries.filter(e => e.scale && e.scale.bodyFat);
+    buildChart('chartBodyFat', 'Body fat %', {
+      labels: fatEntries.map(e => fmtDate(e.date)),
+      values: fatEntries.map(e => e.scale.bodyFat)
+    }, '#C0392B');
+
+    const muscleEntries = entries.filter(e => e.scale && e.scale.muscleMass);
+    buildChart('chartMuscle', 'Muscle mass (kg)', {
+      labels: muscleEntries.map(e => fmtDate(e.date)),
+      values: muscleEntries.map(e => e.scale.muscleMass)
+    }, '#4A8C62');
+
+    const viscEntries = entries.filter(e => e.scale && e.scale.visceralFat);
+    buildChart('chartVisceral', 'Visceral fat', {
+      labels: viscEntries.map(e => fmtDate(e.date)),
+      values: viscEntries.map(e => e.scale.visceralFat)
+    }, '#B7791F');
   }
 
   // ── Render ────────────────────────────────────────────────────
@@ -538,8 +653,7 @@
     const latest = entries[entries.length - 1];
     const currentW = latest ? latest.weight : START_WEIGHT;
     const lost = Math.max(0, START_WEIGHT - currentW).toFixed(1);
-    const toGo = Math.max(0, currentW - 78).toFixed(1);
-    const bmi = (currentW / (1.75 * 1.75)).toFixed(1);
+    const toGo = Math.max(0, currentW - 85).toFixed(1);
     const daysLeft = Math.max(0, Math.ceil((WEDDING - new Date()) / 86400000));
     const totalWorkouts = workouts.filter(w => w.completed).length;
     const streak = calcStreak();
@@ -574,17 +688,6 @@
       </div>`;
     } else { bannerEl.innerHTML = ''; }
 
-    // helper: format a change value with colour and direction
-    function fmtChange(diff, unit, lowerIsBetter) {
-      if (diff === null || isNaN(diff)) return '';
-      const improved = lowerIsBetter ? diff < 0 : diff > 0;
-      const neutral = diff === 0;
-      const color = neutral ? 'var(--text-hint)' : improved ? 'var(--accent)' : 'var(--danger)';
-      const sign = diff > 0 ? '+' : '';
-      return `<span style="font-size:11px;font-weight:500;color:${color};">${sign}${diff.toFixed(1)}${unit}</span>`;
-    }
-
-    // First entry with meas data = baseline
     const firstWithMeas = entries.find(e => e.meas && Object.values(e.meas).some(v => v));
     if (latest && latest.meas && Object.values(latest.meas).some(v => v)) {
       const m = latest.meas;
@@ -605,17 +708,14 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">
             ${measFields.map(f => {
               const diff = b && b[f.key] ? parseFloat((m[f.key] - b[f.key]).toFixed(1)) : null;
-              return `<div class="metric">
-                <div class="metric-label">${f.label}</div>
+              return `<div class="metric"><div class="metric-label">${f.label}</div>
                 <div class="metric-value" style="font-size:18px;">${m[f.key]}<span style="font-size:12px;font-weight:400;">cm</span></div>
-                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div>
-              </div>`;
+                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div></div>`;
             }).join('')}
           </div>`;
       }
     }
 
-    // First entry with scale data = baseline
     const firstWithScale = entries.find(e => e.scale && Object.values(e.scale).some(v => v));
     if (latest && latest.scale && Object.values(latest.scale).some(v => v)) {
       const s = latest.scale;
@@ -643,11 +743,9 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
             ${scaleFields.map(f => {
               const diff = bs && bs[f.key] !== null && bs[f.key] !== undefined ? parseFloat((s[f.key] - bs[f.key]).toFixed(1)) : null;
-              return `<div class="metric">
-                <div class="metric-label">${f.label}</div>
+              return `<div class="metric"><div class="metric-label">${f.label}</div>
                 <div class="metric-value" style="font-size:18px;">${s[f.key]}<span style="font-size:12px;font-weight:400;">${f.unit}</span></div>
-                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div>
-              </div>`;
+                <div class="metric-sub">${diff !== null ? fmtChange(diff, f.unit, f.lowerIsBetter) + ' from start' : 'Baseline'}</div></div>`;
             }).join('')}
           </div>`;
       }
@@ -657,22 +755,82 @@
   function renderHistory() {
     const el = document.getElementById('historyContent');
     if (!entries.length) { el.innerHTML = '<div class="empty-state">No entries yet.</div>'; return; }
-    let rows = '';
+
+    const scaleLabels = [
+      { key: 'bodyFat', label: 'Body fat', unit: '%' },
+      { key: 'muscleMass', label: 'Muscle mass', unit: 'kg' },
+      { key: 'visceralFat', label: 'Visceral fat', unit: '' },
+      { key: 'fatMass', label: 'Fat mass', unit: 'kg' },
+      { key: 'skeletalMuscle', label: 'Skeletal muscle', unit: 'kg' },
+      { key: 'musclePct', label: 'Muscle %', unit: '%' },
+      { key: 'bodyWater', label: 'Body water', unit: '%' },
+      { key: 'protein', label: 'Protein %', unit: '%' },
+      { key: 'bmr', label: 'BMR', unit: 'kcal' },
+      { key: 'bodyAge', label: 'Body age', unit: 'yrs' },
+      { key: 'boneMass', label: 'Bone mineral', unit: 'kg' },
+      { key: 'fatFreeBody', label: 'Fat-free body', unit: 'kg' },
+      { key: 'waistHip', label: 'Waist-hip ratio', unit: '' },
+      { key: 'bmi', label: 'BMI', unit: '' },
+    ];
+
+    const measLabels = [
+      { key: 'waist', label: 'Waist', unit: 'cm' },
+      { key: 'chest', label: 'Chest', unit: 'cm' },
+      { key: 'hips', label: 'Hips', unit: 'cm' },
+      { key: 'armL', label: 'L arm', unit: 'cm' },
+      { key: 'armR', label: 'R arm', unit: 'cm' },
+      { key: 'thighL', label: 'L thigh', unit: 'cm' },
+      { key: 'thighR', label: 'R thigh', unit: 'cm' },
+    ];
+
+    let html = `<table class="history-table"><thead><tr><th>Date</th><th>Weight</th><th>Change</th><th></th><th></th></tr></thead><tbody>`;
+
     [...entries].reverse().forEach((e, i) => {
       const idx = entries.length - 1 - i;
       const prev = idx > 0 ? entries[idx - 1] : null;
       const change = prev ? (e.weight - prev.weight).toFixed(1) : null;
       const cls = change !== null ? (parseFloat(change) < 0 ? 'change-down' : parseFloat(change) > 0 ? 'change-up' : '') : '';
       const sign = parseFloat(change) > 0 ? '+' : '';
+      const hasScale = e.scale && Object.values(e.scale).some(v => v);
       const hasMeas = e.meas && Object.values(e.meas).some(v => v);
-      rows += `<tr>
-        <td>${fmtDate(e.date)}</td><td><strong>${e.weight}kg</strong></td>
+      const hasDetail = hasScale || hasMeas;
+      const detailId = 'detail-' + i;
+
+      html += `<tr>
+        <td>${fmtDate(e.date)}</td>
+        <td><strong>${e.weight}kg</strong></td>
         <td class="${cls}">${change !== null ? sign + change + 'kg' : '—'}</td>
-        <td>${hasMeas ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;">Measured</span>' : ''}</td>
+        <td>${hasDetail ? `<button class="expand-btn" onclick="toggleDetail('${detailId}')">details</button>` : ''}</td>
         <td><button class="btn btn-danger" onclick="deleteEntry('${e.date}')">Remove</button></td>
       </tr>`;
+
+      if (hasDetail) {
+        const scaleRows = scaleLabels.filter(f => e.scale && e.scale[f.key] !== null && e.scale[f.key] !== undefined);
+        const measRows = measLabels.filter(f => e.meas && e.meas[f.key]);
+
+        html += `<tr id="${detailId}" style="display:none;"><td colspan="5" style="padding:0;">
+          <div style="padding:12px 14px;background:var(--bg-muted);">`;
+
+        if (scaleRows.length) {
+          html += `<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-hint);font-weight:500;margin-bottom:8px;">Body composition</div>
+            <div class="detail-grid">
+              ${scaleRows.map(f => `<div class="detail-cell"><div class="detail-cell-label">${f.label}</div><div class="detail-cell-value">${e.scale[f.key]}${f.unit}</div></div>`).join('')}
+            </div>`;
+        }
+
+        if (measRows.length) {
+          html += `<div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-hint);font-weight:500;margin-bottom:8px;${scaleRows.length ? 'margin-top:12px;' : ''}">Measurements</div>
+            <div class="detail-grid">
+              ${measRows.map(f => `<div class="detail-cell"><div class="detail-cell-label">${f.label}</div><div class="detail-cell-value">${e.meas[f.key]}${f.unit}</div></div>`).join('')}
+            </div>`;
+        }
+
+        html += `</div></td></tr>`;
+      }
     });
-    el.innerHTML = `<table class="history-table"><thead><tr><th>Date</th><th>Weight</th><th>Change</th><th></th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+
+    html += `</tbody></table>`;
+    el.innerHTML = html;
   }
 
   function renderMeasurements() {
@@ -693,16 +851,17 @@
     document.getElementById('trainingPlan').innerHTML = plan.map((d, i) => {
       const isToday = d.day === todayDayName;
       const workout = workouts.find(w => w.date === today && w.day === d.day);
-      const recentWorkout = workouts.slice().reverse().find(w => w.day === d.day);
 
       let badge = '';
       if (workout) {
-        badge = workout.completed
-          ? '<span class="completed-badge">Completed</span>'
-          : '<span class="skipped-badge">Skipped</span>';
+        badge = workout.completed ? '<span class="completed-badge">Completed</span>' : '<span class="skipped-badge">Skipped</span>';
       } else if (isToday && !d.isRest) {
         badge = '<span style="font-size:11px;padding:2px 8px;border-radius:20px;background:#FEF9EC;color:#8A5A00;font-weight:500;">Today</span>';
       }
+
+      // Find last session for this day to show previous weights
+      const lastSession = workouts.filter(w => w.day === d.day && w.completed && w.date !== today)
+                                  .sort((a,b) => b.date.localeCompare(a.date))[0];
 
       const tickSection = !d.isRest ? `
         <div class="tick-row" id="tickrow-${i}">
@@ -710,7 +869,7 @@
           <div class="tick-info">
             <div class="tick-label">${workout && workout.completed ? 'Session completed' : 'Mark as completed'}</div>
             <div class="tick-date">Date: <input type="date" id="tickdate-${i}" value="${today}" style="display:inline;width:auto;padding:2px 6px;font-size:12px;border-radius:4px;border:1px solid var(--border);background:var(--bg);"></div>
-            <textarea class="tick-notes" id="ticknotes-${i}" placeholder="Optional notes — weight used, how it felt, PBs...">${workout ? workout.notes : ''}</textarea>
+            <textarea class="tick-notes" id="ticknotes-${i}" placeholder="Optional notes — how it felt, PBs...">${workout ? workout.notes : ''}</textarea>
             <div class="tick-save-row">
               <button class="btn btn-primary" id="tickbtn-${i}" onclick="submitWorkout(${i},'${d.day}',true)" style="padding:7px 16px;font-size:12px;">Save completed</button>
               <button class="btn" id="skipbtn-${i}" onclick="submitWorkout(${i},'${d.day}',false)" style="padding:7px 16px;font-size:12px;">Mark skipped</button>
@@ -719,6 +878,9 @@
             </div>
           </div>
         </div>` : '';
+
+      const prevWeightsNote = lastSession && lastSession.exNotes && Object.keys(lastSession.exNotes).length
+        ? `<div style="font-size:11px;color:var(--text-hint);margin-bottom:8px;">Last session: ${fmtDate(lastSession.date)}</div>` : '';
 
       return `<div class="day-card">
         <div class="day-header" onclick="toggleDay(${i})">
@@ -734,15 +896,18 @@
         <div class="day-body ${isToday ? 'open' : ''}" id="day${i}">
           ${tickSection}
           ${d.exercises.length ? `
+            ${prevWeightsNote}
             <table class="ex-table">
-              <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th style="min-width:100px;">Weight / notes</th></tr></thead>
+              <thead><tr><th>Exercise</th><th>Sets</th><th>Reps</th><th style="min-width:100px;">Weight / notes</th><th style="min-width:80px;color:var(--text-hint);">Last time</th></tr></thead>
               <tbody>${d.exercises.map((e, ei) => {
                 const savedWeights = (workout && workout.exNotes) ? (workout.exNotes[ei] || '') : '';
+                const lastWeight = (lastSession && lastSession.exNotes) ? (lastSession.exNotes[ei] || '—') : '—';
                 return `<tr>
                   <td><div class="ex-name">${e.name}</div><div class="ex-note">${e.note}</div></td>
                   <td>${e.sets}</td>
                   <td>${e.reps}</td>
                   <td><input class="ex-weight-input" id="exnote-${i}-${ei}" type="text" placeholder="e.g. 40kg" value="${savedWeights}"></td>
+                  <td style="font-size:12px;color:var(--text-hint);">${lastWeight}</td>
                 </tr>`;
               }).join('')}</tbody>
             </table>` : `<div style="padding:12px 0 4px;font-size:24px;text-align:center;">&#x1F9D8;</div>`}
@@ -753,8 +918,7 @@
   }
 
   function toggleTick(i, dayName) {
-    const el = document.getElementById('tick-' + i);
-    el.classList.toggle('ticked');
+    document.getElementById('tick-' + i).classList.toggle('ticked');
   }
 
   function submitWorkout(i, dayName, completed) {
@@ -802,17 +966,46 @@
     const el = document.getElementById('workoutHistory');
     if (!workouts.length) { el.innerHTML = '<div class="empty-state">No workouts logged yet.</div>'; return; }
 
-    let rows = [...workouts].sort((a,b) => b.date.localeCompare(a.date)).map(w => `
-      <tr>
+    let html = `<table class="history-table"><thead><tr><th>Date</th><th>Day</th><th>Status</th><th></th></tr></thead><tbody>`;
+
+    [...workouts].sort((a,b) => b.date.localeCompare(a.date)).forEach((w, i) => {
+      const hasNotes = w.exNotes && Object.keys(w.exNotes).length > 0;
+      const detailId = 'wdetail-' + i;
+      const dayPlan = plan.find(p => p.day === w.day);
+
+      html += `<tr>
         <td>${fmtDate(w.date)}</td>
         <td>${w.day}</td>
         <td>${w.completed
           ? '<span style="font-size:11px;background:var(--accent-light);color:var(--accent);padding:2px 8px;border-radius:20px;font-weight:500;">Done</span>'
           : '<span style="font-size:11px;background:var(--danger-light);color:var(--danger);padding:2px 8px;border-radius:20px;font-weight:500;">Skipped</span>'}</td>
-        <td style="font-size:12px;color:var(--text-muted);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${w.notes || '—'}</td>
-      </tr>`).join('');
+        <td>${hasNotes ? `<button class="expand-btn" onclick="toggleDetail('${detailId}')">weights</button>` : ''}</td>
+      </tr>`;
 
-    el.innerHTML = `<table class="history-table"><thead><tr><th>Date</th><th>Day</th><th>Status</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table>`;
+      if (hasNotes && dayPlan) {
+        html += `<tr id="${detailId}" style="display:none;"><td colspan="4" style="padding:0;">
+          <div style="padding:12px 14px;background:var(--bg-muted);">`;
+
+        if (w.notes) {
+          html += `<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-style:italic;">"${w.notes}"</div>`;
+        }
+
+        html += `<div class="workout-notes-panel-title">Exercise weights</div>`;
+        html += `<div class="detail-grid">`;
+        dayPlan.exercises.forEach((ex, ei) => {
+          if (w.exNotes[ei]) {
+            html += `<div class="detail-cell">
+              <div class="detail-cell-label">${ex.name}</div>
+              <div class="detail-cell-value">${w.exNotes[ei]}</div>
+            </div>`;
+          }
+        });
+        html += `</div></div></td></tr>`;
+      }
+    });
+
+    html += `</tbody></table>`;
+    el.innerHTML = html;
   }
 
   function toggleDay(i) {
