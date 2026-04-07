@@ -689,9 +689,10 @@
     } else { bannerEl.innerHTML = ''; }
 
     const firstWithMeas = entries.find(e => e.meas && Object.values(e.meas).some(v => v));
-    if (latest && latest.meas && Object.values(latest.meas).some(v => v)) {
-      const m = latest.meas;
-      const b = (firstWithMeas && firstWithMeas.date !== latest.date) ? firstWithMeas.meas : null;
+    const latestWithMeas = [...entries].reverse().find(e => e.meas && Object.values(e.meas).some(v => v));
+    if (latestWithMeas) {
+      const m = latestWithMeas.meas;
+      const b = (firstWithMeas && firstWithMeas.date !== latestWithMeas.date) ? firstWithMeas.meas : null;
       const measFields = [
         { key: 'waist', label: 'Waist', unit: 'cm', lowerIsBetter: true },
         { key: 'chest', label: 'Chest', unit: 'cm', lowerIsBetter: false },
@@ -704,7 +705,7 @@
       if (measFields.length) {
         document.getElementById('dashMeasCard').style.display = 'block';
         document.getElementById('dashMeasDisplay').innerHTML =
-          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latest.date)}${b ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithMeas.date) : ''}</p>
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latestWithMeas.date)}${b ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithMeas.date) : ''}</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;">
             ${measFields.map(f => {
               const diff = b && b[f.key] ? parseFloat((m[f.key] - b[f.key]).toFixed(1)) : null;
@@ -717,9 +718,10 @@
     }
 
     const firstWithScale = entries.find(e => e.scale && Object.values(e.scale).some(v => v));
-    if (latest && latest.scale && Object.values(latest.scale).some(v => v)) {
-      const s = latest.scale;
-      const bs = (firstWithScale && firstWithScale.date !== latest.date) ? firstWithScale.scale : null;
+    const latestWithScale = [...entries].reverse().find(e => e.scale && Object.values(e.scale).some(v => v));
+    if (latestWithScale) {
+      const s = latestWithScale.scale;
+      const bs = (firstWithScale && firstWithScale.date !== latestWithScale.date) ? firstWithScale.scale : null;
       const scaleFields = [
         { key: 'bodyFat',       label: 'Body fat',       unit: '%',    lowerIsBetter: true },
         { key: 'muscleMass',    label: 'Muscle mass',    unit: 'kg',   lowerIsBetter: false },
@@ -739,7 +741,7 @@
       if (scaleFields.length) {
         document.getElementById('dashScaleCard').style.display = 'block';
         document.getElementById('dashScaleDisplay').innerHTML =
-          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latest.date)}${bs ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithScale.date) : ''}</p>
+          `<p style="font-size:12px;color:var(--text-hint);margin-bottom:10px;">Latest: ${fmtDate(latestWithScale.date)}${bs ? ' &nbsp;·&nbsp; Baseline: ' + fmtDate(firstWithScale.date) : ''}</p>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;">
             ${scaleFields.map(f => {
               const diff = bs && bs[f.key] !== null && bs[f.key] !== undefined ? parseFloat((s[f.key] - bs[f.key]).toFixed(1)) : null;
